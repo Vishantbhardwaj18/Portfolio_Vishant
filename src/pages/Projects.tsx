@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   Activity,
@@ -593,6 +594,7 @@ function ProjectCard({
 }
 
 function DossierModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const dialogRef = React.useRef<HTMLDivElement | null>(null);
   const modalScrollRef = React.useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ container: modalScrollRef });
   const dossierProgress = useSpring(scrollYProgress, {
@@ -637,16 +639,50 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-8">
+  React.useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    window.setTimeout(() => {
+      modalScrollRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      dialogRef.current?.focus();
+    }, 0);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose, project.title]);
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center p-2 sm:p-4 md:p-8"
+      role="presentation"
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-background/82 backdrop-blur-2xl dark:bg-black/92"
+        className="project-dossier-overlay absolute inset-0 backdrop-blur-2xl"
       />
       <motion.div
+        ref={dialogRef}
         initial={{ opacity: 0, scale: 0.94, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 24 }}
@@ -655,9 +691,13 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onWheel={handleWheel}
-        className="project-section-card relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-xl border shadow-[0_40px_160px_rgba(15,23,42,0.24)] dark:shadow-[0_40px_160px_rgba(0,0,0,0.65)]"
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-dossier-title"
+        className="project-dossier-card relative max-h-[calc(100vh-1rem)] w-full max-w-6xl overflow-hidden rounded-xl border outline-none sm:max-h-[calc(100vh-2rem)] md:max-h-[92vh]"
       >
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(198,161,74,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(198,161,74,0.045)_1px,transparent_1px)] bg-[size:28px_28px]" />
+        <div className="project-dossier-grid-bg pointer-events-none absolute inset-0" />
         <div className="absolute left-0 right-0 top-0 z-30 h-px bg-gold/10">
           <motion.span
             style={{ scaleX: dossierProgress }}
@@ -666,19 +706,19 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
         </div>
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 z-20 rounded-lg border border-gold/20 bg-surface/90 p-3 text-gold transition-colors hover:bg-gold/10 dark:bg-surface/80"
+          className="absolute right-3 top-3 z-40 rounded-lg border border-gold/30 bg-surface/95 p-3 text-gold shadow-[0_12px_40px_rgba(15,23,42,0.16)] transition-colors hover:bg-gold/10 dark:bg-surface/90 md:right-5 md:top-5"
           aria-label="Close dossier"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <div ref={modalScrollRef} className="relative grid max-h-[92vh] overflow-y-auto lg:grid-cols-[0.72fr_1fr]">
+        <div ref={modalScrollRef} className="relative grid max-h-[calc(100vh-1rem)] scroll-pt-6 overflow-y-auto sm:max-h-[calc(100vh-2rem)] md:max-h-[92vh] lg:grid-cols-[0.72fr_1fr]">
           <motion.aside
             style={{ y: leftPanelY }}
-            className="border-b border-gold/10 bg-surface/70 p-8 dark:bg-surface/55 lg:border-b-0 lg:border-r"
+            className="project-dossier-aside border-b border-gold/15 p-5 sm:p-8 lg:border-b-0 lg:border-r"
           >
-            <div className="sticky top-8 space-y-8">
-              <div className="project-inner-card flex h-52 items-center justify-center rounded-3xl border">
+            <div className="space-y-6 lg:sticky lg:top-8 lg:space-y-8">
+              <div className="project-inner-card flex h-40 items-center justify-center rounded-3xl border sm:h-52">
                 <motion.div
                   style={{ y: iconFloatY }}
                   animate={{ scale: [1, 1.05, 1], rotate: [0, 3, 0] }}
@@ -697,7 +737,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
                 >
                   Technical Dossier
                 </Badge>
-                <h2 className="font-heading text-3xl font-bold leading-tight tracking-tighter md:text-4xl">
+                <h2 id="project-dossier-title" className="font-heading text-3xl font-bold leading-tight tracking-tighter md:text-4xl">
                   {project.title}
                 </h2>
                 <p className="text-[10px] font-black uppercase tracking-[0.35em] text-gold/70">{project.role}</p>
@@ -721,7 +761,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="space-y-8 p-8 md:p-10"
+            className="project-dossier-main space-y-8 p-5 sm:p-8 md:p-10"
           >
             <motion.section variants={fadeUp} className="space-y-4">
               <div className="flex flex-wrap items-center gap-3">
@@ -821,7 +861,8 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
           </motion.main>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

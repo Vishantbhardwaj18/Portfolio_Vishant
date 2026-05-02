@@ -163,6 +163,7 @@ Accent:     text-gold or bg-accent
     --rose-rgb: 244, 63, 94;
     --amber-rgb: 245, 158, 11;
     --emerald-rgb: 16, 185, 129;
+    --background-rgb: 248, 250, 252;
     --surface-rgb: 255, 255, 255;
     --text-rgb: 15, 23, 42;
     
@@ -224,6 +225,7 @@ Accent:     text-gold or bg-accent
     --rose-rgb: 244, 63, 94;
     --amber-rgb: 245, 158, 11;
     --emerald-rgb: 16, 185, 129;
+    --background-rgb: 248, 250, 252;
     --surface-rgb: 255, 255, 255;
     --text-rgb: 15, 23, 42;
     
@@ -280,6 +282,7 @@ Accent:     text-gold or bg-accent
     --rose-rgb: 251, 113, 133;
     --amber-rgb: 251, 191, 36;
     --emerald-rgb: 52, 211, 153;
+    --background-rgb: 2, 3, 10;
     --surface-rgb: 8, 13, 24;
     --text-rgb: 226, 232, 240;
     
@@ -825,6 +828,101 @@ Accent:     text-gold or bg-accent
     border-color: rgba(var(--accent-rgb), 0.24);
   }
 
+  .project-dossier-overlay {
+    background:
+      radial-gradient(circle at 18% 16%, rgba(var(--primary-rgb), 0.22), transparent 28%),
+      radial-gradient(circle at 82% 22%, rgba(var(--violet-rgb), 0.14), transparent 26%),
+      radial-gradient(circle at 50% 100%, rgba(var(--accent-rgb), 0.18), transparent 34%),
+      rgba(var(--background-rgb), 0.86);
+  }
+
+  .dark .project-dossier-overlay {
+    background:
+      radial-gradient(circle at 16% 18%, rgba(var(--primary-rgb), 0.24), transparent 30%),
+      radial-gradient(circle at 82% 18%, rgba(var(--violet-rgb), 0.18), transparent 28%),
+      radial-gradient(circle at 52% 100%, rgba(var(--accent-rgb), 0.2), transparent 38%),
+      rgba(2, 6, 23, 0.84);
+  }
+
+  .project-dossier-card {
+    background:
+      radial-gradient(circle at 10% 0%, rgba(var(--primary-rgb), 0.16), transparent 34%),
+      radial-gradient(circle at 92% 6%, rgba(var(--violet-rgb), 0.11), transparent 30%),
+      radial-gradient(circle at 70% 92%, rgba(var(--accent-rgb), 0.12), transparent 34%),
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.98), rgba(var(--primary-rgb), 0.055)),
+      var(--surface);
+    border-color: color-mix(in srgb, var(--border), var(--accent) 42%);
+    box-shadow:
+      0 44px 150px rgba(15, 23, 42, 0.24),
+      0 0 0 1px rgba(var(--accent-rgb), 0.12),
+      0 0 80px rgba(var(--primary-rgb), 0.14);
+  }
+
+  .dark .project-dossier-card {
+    background:
+      radial-gradient(circle at 8% 0%, rgba(var(--primary-rgb), 0.18), transparent 34%),
+      radial-gradient(circle at 92% 8%, rgba(var(--violet-rgb), 0.16), transparent 32%),
+      radial-gradient(circle at 72% 96%, rgba(var(--accent-rgb), 0.16), transparent 38%),
+      linear-gradient(135deg, rgba(8, 13, 24, 0.98), rgba(var(--accent-rgb), 0.075)),
+      var(--surface);
+    border-color: rgba(var(--accent-rgb), 0.42);
+    box-shadow:
+      0 44px 170px rgba(0, 0, 0, 0.64),
+      0 0 0 1px rgba(var(--accent-rgb), 0.14),
+      0 0 95px rgba(var(--accent-rgb), 0.18);
+  }
+
+  .project-dossier-grid-bg {
+    background-image:
+      linear-gradient(rgba(var(--primary-rgb), 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb), 0.06) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .dark .project-dossier-grid-bg {
+    background-image:
+      linear-gradient(rgba(var(--primary-rgb), 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb), 0.07) 1px, transparent 1px);
+  }
+
+  .project-dossier-aside {
+    background:
+      linear-gradient(180deg, rgba(var(--surface-rgb), 0.92), rgba(var(--primary-rgb), 0.055)),
+      rgba(var(--surface-rgb), 0.9);
+  }
+
+  .dark .project-dossier-aside {
+    background:
+      linear-gradient(180deg, rgba(8, 13, 24, 0.92), rgba(var(--accent-rgb), 0.08)),
+      rgba(var(--surface-rgb), 0.78);
+  }
+
+  .project-dossier-main {
+    background:
+      linear-gradient(135deg, rgba(var(--background-rgb), 0.42), rgba(var(--primary-rgb), 0.045)),
+      rgba(var(--surface-rgb), 0.58);
+  }
+
+  .dark .project-dossier-main {
+    background:
+      linear-gradient(135deg, rgba(2, 6, 23, 0.34), rgba(var(--accent-rgb), 0.055)),
+      rgba(2, 6, 23, 0.12);
+  }
+
+  .project-dossier-card .project-inner-card {
+    background:
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.96), rgba(var(--primary-rgb), 0.08), rgba(var(--accent-rgb), 0.055)),
+      var(--surface);
+    border-color: color-mix(in srgb, var(--border), var(--accent) 34%);
+  }
+
+  .dark .project-dossier-card .project-inner-card {
+    background:
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.86), rgba(var(--accent-rgb), 0.14), rgba(var(--violet-rgb), 0.045)),
+      rgba(var(--surface-rgb), 0.78);
+    border-color: rgba(var(--accent-rgb), 0.34);
+  }
+
   .project-visual-card {
     background:
       radial-gradient(circle at 50% 34%, rgba(var(--accent-rgb), 0.2), transparent 42%),
@@ -905,7 +1003,14 @@ Accent:     text-gold or bg-accent
   .thoughts-section {
     position: relative;
     overflow: hidden;
-    background: var(--bg);
+    background:
+      linear-gradient(180deg, rgba(var(--background-rgb), 0) 0%, rgba(var(--background-rgb), 0.76) 12%, rgba(var(--background-rgb), 0.78) 88%, rgba(var(--background-rgb), 0) 100%),
+      radial-gradient(circle at 10% 18%, rgba(var(--primary-rgb), 0.16), transparent 34%),
+      radial-gradient(circle at 88% 20%, rgba(var(--violet-rgb), 0.1), transparent 30%),
+      radial-gradient(circle at 20% 86%, rgba(var(--amber-rgb), 0.09), transparent 34%),
+      radial-gradient(circle at 78% 82%, rgba(var(--emerald-rgb), 0.09), transparent 32%),
+      linear-gradient(135deg, rgba(var(--primary-rgb), 0.035), rgba(var(--accent-rgb), 0.045)),
+      var(--bg);
     color: var(--text);
   }
 
@@ -915,9 +1020,36 @@ Accent:     text-gold or bg-accent
     inset: 0;
     pointer-events: none;
     background-image:
-      radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--primary), transparent 92%), transparent 24%),
-      radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--accent), transparent 95%), transparent 18%);
-    opacity: 0.72;
+      linear-gradient(rgba(var(--primary-rgb), 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb), 0.045) 1px, transparent 1px),
+      radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--primary), transparent 86%), transparent 24%),
+      radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--accent), transparent 88%), transparent 18%);
+    background-size: 42px 42px, 42px 42px, auto, auto;
+    opacity: 0.52;
+    mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
+  }
+
+  .thoughts-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    height: auto;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, var(--bg) 0%, transparent 16%, transparent 84%, var(--bg) 100%),
+      linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.12), rgba(var(--violet-rgb), 0.08), rgba(var(--accent-rgb), 0.12), transparent);
+  }
+
+  .dark .thoughts-section {
+    background:
+      linear-gradient(180deg, rgba(var(--background-rgb), 0) 0%, rgba(var(--background-rgb), 0.72) 12%, rgba(var(--background-rgb), 0.74) 88%, rgba(var(--background-rgb), 0) 100%),
+      radial-gradient(circle at 10% 18%, rgba(var(--primary-rgb), 0.13), transparent 34%),
+      radial-gradient(circle at 88% 20%, rgba(var(--violet-rgb), 0.12), transparent 30%),
+      radial-gradient(circle at 22% 86%, rgba(var(--amber-rgb), 0.07), transparent 34%),
+      radial-gradient(circle at 78% 84%, rgba(var(--emerald-rgb), 0.1), transparent 34%),
+      linear-gradient(135deg, rgba(var(--primary-rgb), 0.04), rgba(var(--accent-rgb), 0.045)),
+      var(--bg);
   }
 
   .thoughts-heading-title {
@@ -925,7 +1057,11 @@ Accent:     text-gold or bg-accent
     display: inline-flex;
     font-family: var(--font-display);
     font-weight: 800;
-    color: var(--text);
+    color: transparent;
+    background: linear-gradient(90deg, var(--text), var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 18px 60px rgba(var(--primary-rgb), 0.18);
   }
 
   .thoughts-heading-title::after {
@@ -954,7 +1090,26 @@ Accent:     text-gold or bg-accent
   }
 
   .thoughts-copy {
-    color: var(--text-secondary);
+    display: inline-flex;
+    width: fit-content;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--primary-rgb), 0.22);
+    background:
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.62), rgba(var(--primary-rgb), 0.06)),
+      rgba(var(--surface-rgb), 0.54);
+    color: var(--primary);
+    padding: 0.45rem 0.8rem;
+    box-shadow: 0 14px 40px rgba(var(--primary-rgb), 0.08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .dark .thoughts-copy {
+    background:
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.56), rgba(var(--accent-rgb), 0.08)),
+      rgba(var(--surface-rgb), 0.48);
+    border-color: rgba(var(--accent-rgb), 0.28);
+    color: var(--accent);
   }
 
   .thoughts-grid {
@@ -968,15 +1123,33 @@ Accent:     text-gold or bg-accent
     min-height: 18rem;
     padding: 1rem;
     border-radius: 1.25rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 18% 0%, rgba(var(--primary-rgb), 0.12), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(var(--accent-rgb), 0.1), transparent 38%),
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.78), rgba(var(--background-rgb), 0.46));
+    border: 1px solid rgba(var(--primary-rgb), 0.18);
     overflow: hidden;
-    box-shadow: 0 18px 40px color-mix(in srgb, var(--text), transparent 88%);
+    box-shadow:
+      0 18px 44px color-mix(in srgb, var(--text), transparent 90%),
+      inset 0 1px 0 rgba(var(--surface-rgb), 0.38);
     --glow-left: 50%;
     --glow-top: 50%;
     --glow-opacity: 0;
     --progress: 0%;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    -webkit-backdrop-filter: blur(22px) saturate(1.12);
+    backdrop-filter: blur(22px) saturate(1.12);
+  }
+
+  .dark .thought-card {
+    background:
+      radial-gradient(circle at 18% 0%, rgba(var(--primary-rgb), 0.13), transparent 42%),
+      radial-gradient(circle at 88% 92%, rgba(var(--accent-rgb), 0.12), transparent 40%),
+      linear-gradient(135deg, rgba(var(--surface-rgb), 0.68), rgba(var(--background-rgb), 0.5));
+    border-color: rgba(var(--accent-rgb), 0.2);
+    box-shadow:
+      0 18px 54px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.045);
   }
 
   .thought-card::before {

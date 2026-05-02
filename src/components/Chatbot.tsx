@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, X, Send, MessageCircle, RefreshCcw, Sparkles, UserRound, ArrowUpRight, BriefcaseBusiness, FolderKanban, Mail, Cpu } from "lucide-react";
+import { Bot, X, Send, MessageCircle, RefreshCcw, Sparkles, UserRound, ArrowUpRight, BriefcaseBusiness, Cpu, WandSparkles, FileText, Mail, Trophy, Radar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Message {
@@ -20,6 +20,15 @@ const quickPrompts = [
   'What is Vishant working on now?'
 ];
 
+const compactPrompts = [
+  'Best project?',
+  'AI skills',
+  'Robotics work',
+  'Availability',
+  'Contact',
+  'Resume'
+];
+
 const defaultActions = [
   'Show your top projects',
   'Tell me about your experience',
@@ -35,25 +44,9 @@ const actionRoutes: Record<string, string> = {
   'How can I contact you?': '/contact',
   'Open contact page': '/contact',
   'View resume': '/resume',
+  'Resume': '/resume',
+  'Contact': '/contact',
 };
-
-const suggestionGroups = [
-  {
-    title: 'Explore',
-    icon: FolderKanban,
-    prompts: ['Show your top projects', 'Recommend a project', 'What is Vishant working on now?']
-  },
-  {
-    title: 'Profile',
-    icon: BriefcaseBusiness,
-    prompts: ['Tell me about your experience', 'What technologies do you use?', 'View resume']
-  },
-  {
-    title: 'Connect',
-    icon: Mail,
-    prompts: ['How can I contact you?', 'Is Vishant available?', 'Open contact page']
-  }
-];
 
 const createBotMessage = (text: string, actions: string[] = defaultActions): Message => ({
   id: `bot-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -63,13 +56,129 @@ const createBotMessage = (text: string, actions: string[] = defaultActions): Mes
   timestamp: Date.now()
 });
 
-const normalizeText = (text: string) => text.toLowerCase().replace(/[^\w\s]/g, '').trim();
+const synonymMap: Record<string, string> = {
+  birthdate: 'birthday',
+  birthplace: 'location',
+  enquiry: 'inquiry',
+  enquires: 'inquiry',
+  enquire: 'inquiry',
+  availablity: 'availability',
+  avilable: 'available',
+  experiance: 'experience',
+  exprience: 'experience',
+  projet: 'project',
+  projects: 'project',
+  tech: 'technology',
+  technologies: 'technology',
+  robot: 'robotics',
+  robots: 'robotics',
+  saas: 'software',
+  startup: 'founder',
+  startups: 'founder',
+};
+
+const calculateAge = (birthDate: Date) => {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const hasBirthdayPassed =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+  if (!hasBirthdayPassed) age -= 1;
+  return age;
+};
+
+const normalizeText = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => synonymMap[word] ?? word)
+    .join(' ')
+    .trim();
+
+const tokenize = (text: string) => Array.from(new Set(normalizeText(text).split(/\s+/).filter((word) => word.length > 1)));
+
+const scoreKeywords = (normalized: string, keywords: string[]) => {
+  const messageTokens = tokenize(normalized);
+  return keywords.reduce((score, keyword) => {
+    const normalizedKeyword = normalizeText(keyword);
+    const keywordTokens = tokenize(normalizedKeyword);
+    const phraseScore = normalized.includes(normalizedKeyword) ? 4 + keywordTokens.length : 0;
+    const tokenScore = keywordTokens.reduce((total, token) => total + (messageTokens.includes(token) ? 1 : 0), 0);
+    return score + phraseScore + tokenScore;
+  }, 0);
+};
 
 const filterActions = (actions: string[], messageText: string): string[] => {
   const normalizedMessage = normalizeText(messageText);
   const filtered = actions.filter((action) => normalizeText(action) !== normalizedMessage);
   return filtered.length > 0 ? filtered : defaultActions.filter((action) => normalizeText(action) !== normalizedMessage);
 };
+
+const profileFacts = [
+  {
+    keywords: ['dob', 'date of birth', 'birthday', 'born', 'birth'],
+    response: () =>
+      `Vishant Bhardwaj's date of birth is 18 September 2006. He is ${calculateAge(new Date(2006, 8, 18))} years old.`,
+    actions: ['View resume', 'Tell me about your experience', 'How can I contact you?']
+  },
+  {
+    keywords: ['age', 'how old'],
+    response: () =>
+      `Vishant is ${calculateAge(new Date(2006, 8, 18))} years old. His date of birth is 18 September 2006.`,
+    actions: ['View resume', 'Tell me about your experience', 'How can I contact you?']
+  },
+  {
+    keywords: ['full name', 'name', 'who is vishant', 'about vishant', 'profile'],
+    response: () =>
+      'His full name is Vishant Bhardwaj. He is a product-focused AI, SaaS, and robotics builder, currently leading MaVionix work while studying at IIT Madras and SRM IST.',
+    actions: ['View resume', 'Tell me about your experience', 'Show your top projects']
+  },
+  {
+    keywords: ['email', 'mail', 'contact email', 'gmail'],
+    response: () =>
+      'Vishant\'s primary email is vishantbhardwaj06@gmail.com. For professional inquiries, the Contact page is the best place to send a focused brief.',
+    actions: ['Open contact page', 'View resume', 'Show your top projects']
+  },
+  {
+    keywords: ['location', 'based', 'city', 'meerut', 'where does he live', 'where is vishant from'],
+    response: () =>
+      'Vishant is based in Meerut, Uttar Pradesh, India, and works with founder teams in remote, hybrid, and global collaboration formats.',
+    actions: ['How can I contact you?', 'Tell me about your experience', 'View resume']
+  },
+  {
+    keywords: ['education', 'college', 'degree', 'iit', 'srm', 'school', 'study', 'studying'],
+    response: () =>
+      'Education: IIT Madras, BS in Management & Data Science, ongoing toward 2029 with current GPA 7.0; SRM Institute of Science & Technology, B.Tech CSE Data Science, ongoing toward 2028 with current CGPA 9.21. He completed Class XII at St. Xavier\'s World School, Meerut with 80.4% and Class X with 91.6%.',
+    actions: ['View resume', 'Tell me about your experience', 'What technologies do you use?']
+  },
+  {
+    keywords: ['cgpa', 'gpa', 'marks', 'percentage', 'grades', 'score'],
+    response: () =>
+      'Current academic scores listed in the portfolio: SRM IST B.Tech CSE Data Science CGPA 9.21, IIT Madras BS Management & Data Science GPA 7.0, Class XII 80.4%, and Class X 91.6%.',
+    actions: ['View resume', 'Tell me about your experience', 'What technologies do you use?']
+  },
+  {
+    keywords: ['resume', 'cv', 'download resume', 'download cv'],
+    response: () =>
+      'You can view or download Vishant\'s resume from the Resume page. It summarizes his education, experience, projects, and technical/product profile.',
+    actions: ['View resume', 'How can I contact you?', 'Show your top projects']
+  },
+  {
+    keywords: ['current work', 'working on', 'working now', 'present work', 'currently building', 'currently working'],
+    response: () =>
+      'Right now, Vishant is focused on MaVionix, AI SaaS workflows for SMEs, robotics/product systems such as ARAK-1, and ongoing academic work at IIT Madras and SRM IST.',
+    actions: ['Show your top projects', 'Tell me about your experience', 'How can I contact you?']
+  },
+  {
+    keywords: ['github', 'repo', 'repository', 'code'],
+    response: () =>
+      'Vishant\'s GitHub profile is github.com/Vishantbhardwaj18. Featured project links are also available on the Projects page.',
+    actions: ['Show your top projects', 'How can I contact you?', 'View resume']
+  }
+];
 
 const knowledgeEntries = [
   {
@@ -170,13 +279,104 @@ const knowledgeEntries = [
   }
 ];
 
-const getKnowledgeResponse = (normalized: string, messageText: string): Message | null => {
-  const match = knowledgeEntries.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
-  return match ? createBotMessage(match.response, filterActions(match.actions, messageText)) : null;
+const getContextTopic = (messages: Message[]) => {
+  const recentText = messages
+    .slice(-4)
+    .map((message) => message.text)
+    .join(' ');
+  const normalizedRecent = normalizeText(recentText);
+  const match = knowledgeEntries
+    .map((entry) => ({ entry, score: scoreKeywords(normalizedRecent, entry.keywords) }))
+    .sort((a, b) => b.score - a.score)[0];
+
+  return match && match.score >= 4 ? match.entry.keywords[0] : '';
 };
 
-const getBotReply = (messageText: string): Message => {
-  const normalized = normalizeText(messageText);
+const getKnowledgeResponse = (normalized: string, messageText: string): Message | null => {
+  const match = knowledgeEntries
+    .map((entry) => ({ entry, score: scoreKeywords(normalized, entry.keywords) }))
+    .sort((a, b) => b.score - a.score)[0];
+
+  if (!match || match.score < 3) return null;
+
+  return createBotMessage(match.entry.response, filterActions(match.entry.actions, messageText));
+};
+
+const getProfileResponse = (normalized: string, messageText: string): Message | null => {
+  const match = profileFacts
+    .map((entry) => ({ entry, score: scoreKeywords(normalized, entry.keywords) }))
+    .sort((a, b) => b.score - a.score)[0];
+
+  if (!match || match.score < 3) return null;
+
+  return createBotMessage(match.entry.response(), filterActions(match.entry.actions, messageText));
+};
+
+const getSmartSuggestions = (input: string, messages: Message[]) => {
+  const normalized = normalizeText(input);
+  const recentBotActions = messages
+    .slice()
+    .reverse()
+    .find((message) => message.type === 'bot' && message.actions?.length)?.actions;
+
+  if (normalized.includes('contact') || normalized.includes('hire') || normalized.includes('available')) {
+    return ['Contact', 'Availability', 'Resume', 'Top projects'];
+  }
+
+  if (normalized.includes('age') || normalized.includes('birthday') || normalized.includes('dob') || normalized.includes('education')) {
+    return ['Resume', 'Experience', 'Contact', 'Top projects'];
+  }
+
+  if (normalized.includes('robotics') || normalized.includes('arak') || normalized.includes('drone')) {
+    return ['Robotics work', 'Best project?', 'Experience', 'Contact'];
+  }
+
+  if (normalized.includes('ai') || normalized.includes('technology') || normalized.includes('skill')) {
+    return ['AI skills', 'AI SaaS work', 'Top projects', 'Experience'];
+  }
+
+  return (recentBotActions?.slice(0, 4) ?? compactPrompts).map((prompt) => {
+    if (prompt === 'Show your top projects') return 'Top projects';
+    if (prompt === 'Tell me about your experience') return 'Experience';
+    if (prompt === 'How can I contact you?') return 'Contact';
+    if (prompt === 'What technologies do you use?') return 'AI skills';
+    if (prompt === 'View resume') return 'Resume';
+    return prompt;
+  });
+};
+
+const expandCompactPrompt = (prompt: string) => {
+  const promptMap: Record<string, string> = {
+    'Best project?': 'Recommend the strongest project',
+    'Top projects': 'Show your top projects',
+    'AI skills': 'What technologies do you use?',
+    'AI SaaS work': 'Tell me about MaVionix AI SaaS work',
+    'Robotics work': 'Tell me about ARAK-1 and robotics work',
+    Availability: 'Is Vishant available?',
+    Contact: 'How can I contact you?',
+    Experience: 'Tell me about your experience',
+    Resume: 'View resume',
+  };
+
+  return promptMap[prompt] ?? prompt;
+};
+
+const getSuggestionMeta = (prompt: string) => {
+  const normalized = normalizeText(prompt);
+
+  if (normalized.includes('resume')) return { icon: FileText, label: 'Resume' };
+  if (normalized.includes('contact') || normalized.includes('availability')) return { icon: Mail, label: prompt };
+  if (normalized.includes('project') || normalized.includes('top') || normalized.includes('best')) return { icon: Trophy, label: prompt };
+  if (normalized.includes('robotics') || normalized.includes('arak')) return { icon: Radar, label: prompt };
+  if (normalized.includes('ai') || normalized.includes('skill') || normalized.includes('technology')) return { icon: Cpu, label: prompt };
+  if (normalized.includes('experience')) return { icon: BriefcaseBusiness, label: prompt };
+
+  return { icon: WandSparkles, label: prompt };
+};
+
+const getBotReply = (messageText: string, previousMessages: Message[] = []): Message => {
+  const contextTopic = /\b(it|that|this|project|system|one)\b/i.test(messageText) ? getContextTopic(previousMessages) : '';
+  const normalized = normalizeText(`${messageText} ${contextTopic}`);
 
   const fallbackActions = [
     'Show your top projects',
@@ -187,6 +387,18 @@ const getBotReply = (messageText: string): Message => {
 
   if (normalized.length === 0) {
     return createBotMessage('Try typing a question about Vishant\'s projects, experience, or how to connect with him.', fallbackActions);
+  }
+
+  const profileResponse = getProfileResponse(normalized, messageText);
+  if (profileResponse) {
+    return profileResponse;
+  }
+
+  if (/\b(compare|difference|versus|vs|which one|better)\b/.test(normalized)) {
+    return createBotMessage(
+      'For technical depth, ARAK-1 is the strongest robotics case study. For product strategy, MaVionix and Noikix show clearer SaaS and MVP leadership. For high-risk systems thinking, the autonomous medical UAV is the most ambitious.',
+      ['Recommend a project', 'Show your top projects', 'How can I contact you?']
+    );
   }
 
   const knowledgeResponse = getKnowledgeResponse(normalized, messageText);
@@ -261,15 +473,17 @@ const getBotReply = (messageText: string): Message => {
     {
       keywords: ['recommend', 'suggest', 'best', 'top', 'priority'],
       response:
-        'I can recommend a few of Vishant\'s most impressive projects. Start with his AI, automation, and product strategy work on the Projects page.',
+        'Best starting point: ARAK-1 for robotics depth, the autonomous medical UAV for systems engineering, and Noikix or MaVionix for product/SaaS leadership. If you only view one, start with ARAK-1.',
       actions: ['Recommend a project', 'Show your top projects', 'Tell me about your experience']
     }
   ];
 
-  const matchedIntent = intents.find((intent) => intent.keywords.some((keyword) => normalized.includes(keyword)));
+  const matchedIntent = intents
+    .map((intent) => ({ intent, score: scoreKeywords(normalized, intent.keywords) }))
+    .sort((a, b) => b.score - a.score)[0];
 
-  if (matchedIntent) {
-    return createBotMessage(matchedIntent.response, filterActions(matchedIntent.actions, messageText));
+  if (matchedIntent && matchedIntent.score >= 3) {
+    return createBotMessage(matchedIntent.intent.response, filterActions(matchedIntent.intent.actions, messageText));
   }
 
   if (/\b(what|where|how|when|who|why)\b/.test(normalized)) {
@@ -307,6 +521,8 @@ const Chatbot: React.FC = () => {
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const smartSuggestions = React.useMemo(() => getSmartSuggestions(input, messages), [input, messages]);
+  const visibleSuggestions = React.useMemo(() => Array.from(new Set(smartSuggestions)).slice(0, 5), [smartSuggestions]);
 
   const createWelcomeMessage = (): Message => ({
     id: `welcome-${Date.now()}`,
@@ -384,7 +600,8 @@ const Chatbot: React.FC = () => {
       timestamp: Date.now()
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const nextMessages = [...messages, userMessage];
+    setMessages(nextMessages);
     setInput('');
     setIsTyping(true);
 
@@ -397,10 +614,10 @@ const Chatbot: React.FC = () => {
     }
 
     setTimeout(() => {
-      const botMessage = getBotReply(messageText);
+      const botMessage = getBotReply(messageText, nextMessages);
       setIsTyping(false);
       setMessages((prev) => [...prev, botMessage]);
-    }, 800 + Math.random() * 900);
+    }, 520 + Math.random() * 520);
   };
 
   const handleAction = (action: string) => {
@@ -437,7 +654,7 @@ const Chatbot: React.FC = () => {
   };
 
   const handleQuickPrompt = (prompt: string) => {
-    handleAction(prompt);
+    handleAction(expandCompactPrompt(prompt));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -445,6 +662,29 @@ const Chatbot: React.FC = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const updateScrollState = (container: HTMLDivElement) => {
+    const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 40;
+    setIsAtBottom(atBottom);
+  };
+
+  const handleMessagesWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const canScroll = container.scrollHeight > container.clientHeight;
+    if (!canScroll) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    container.scrollBy({
+      top: event.deltaY,
+      left: event.deltaX,
+      behavior: 'auto',
+    });
+    updateScrollState(container);
   };
 
   const toggleChat = () => {
@@ -465,18 +705,18 @@ const Chatbot: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-16 right-0 flex h-[min(620px,calc(100vh-7rem))] w-[calc(100vw-2rem)] max-w-[27rem] flex-col overflow-hidden rounded-3xl border border-primary/20 bg-background/95 shadow-[0_30px_120px_rgba(15,23,42,0.28)] backdrop-blur-2xl dark:shadow-[0_30px_130px_rgba(0,0,0,0.62)] sm:w-[27rem]"
+            className="absolute bottom-16 right-0 flex h-[min(600px,calc(100vh-6.5rem))] w-[calc(100vw-1.5rem)] max-w-[26rem] flex-col overflow-hidden rounded-2xl border border-primary/20 bg-background/96 shadow-[0_30px_120px_rgba(15,23,42,0.28)] backdrop-blur-2xl dark:shadow-[0_30px_130px_rgba(0,0,0,0.62)] sm:w-[26rem]"
           >
-            <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-r from-primary/12 via-surface/80 to-accent/12 p-4">
+            <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-r from-primary/12 via-surface/80 to-accent/12 p-3.5">
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px gradient-spectrum" />
               <div className="relative flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-primary/20 bg-primary/15 shadow-[0_0_30px_rgba(var(--primary-rgb),0.16)]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/15 shadow-[0_0_30px_rgba(var(--primary-rgb),0.16)]">
                     <Bot className="h-5 w-5 text-primary" />
                   </div>
                   <motion.div
-                    className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500"
+                    className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500"
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
                   />
@@ -484,35 +724,35 @@ const Chatbot: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-black text-foreground">Vishant AI</h3>
-                    <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-green-600 dark:text-green-300">Live</span>
+                    <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.16em] text-green-600 dark:text-green-300">Smart</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Projects, experience, contact</p>
+                  <p className="text-[11px] text-muted-foreground">Projects, experience, contact</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={clearChat}
-                  className="rounded-xl border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
+                  className="rounded-lg border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
                   aria-label="Reset chat"
                 >
                   <RefreshCcw className="h-4 w-4" />
                 </button>
                 <button
                   onClick={toggleChat}
-                  className="rounded-xl border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
+                  className="rounded-lg border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
                   aria-label="Close chat"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
               </div>
-              <div className="relative mt-3 grid grid-cols-3 gap-2">
+              <div className="relative mt-3 grid grid-cols-3 gap-1.5">
                 {[
                   { label: 'AI SaaS', icon: Cpu },
                   { label: 'Robotics', icon: Sparkles },
                   { label: 'Product', icon: BriefcaseBusiness },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-center gap-1.5 rounded-xl border border-border/40 bg-surface/55 px-2 py-1.5 text-[10px] font-semibold text-muted-foreground">
+                  <div key={item.label} className="flex items-center justify-center gap-1 rounded-lg border border-border/40 bg-surface/55 px-2 py-1.5 text-[9px] font-semibold text-muted-foreground">
                     <item.icon className="h-3 w-3 text-primary" />
                     {item.label}
                   </div>
@@ -521,11 +761,12 @@ const Chatbot: React.FC = () => {
             </div>
 
             {/* Messages */}
-            <div className="relative flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth" onScroll={(e) => {
-              const target = e.currentTarget;
-              const atBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 40;
-              setIsAtBottom(atBottom);
-            }} ref={messagesContainerRef}>
+            <div
+              className="relative flex-1 space-y-3 overflow-y-auto overscroll-contain p-3.5 scroll-smooth"
+              onWheel={handleMessagesWheel}
+              onScroll={(e) => updateScrollState(e.currentTarget)}
+              ref={messagesContainerRef}
+            >
               <div className="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-background/95 to-transparent" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background/95 to-transparent" />
 
@@ -540,10 +781,10 @@ const Chatbot: React.FC = () => {
                 >
                   <motion.div
                     whileHover={{ scale: msg.type === 'user' ? 1.02 : 1.01 }}
-                    className={`max-w-[82%] break-words whitespace-pre-wrap px-4 py-3 text-sm shadow-sm ${
+                    className={`max-w-[84%] break-words whitespace-pre-wrap px-3.5 py-2.5 text-[13px] leading-6 shadow-sm ${
                       msg.type === 'user'
-                        ? 'rounded-3xl rounded-br-sm bg-primary text-primary-foreground'
-                        : 'rounded-3xl rounded-bl-sm border border-border/50 bg-surface/95 text-foreground'
+                        ? 'rounded-2xl rounded-br-sm bg-primary text-primary-foreground'
+                        : 'rounded-2xl rounded-bl-sm border border-border/50 bg-surface/95 text-foreground'
                     }`}
                   >
                     <div className="mb-1 flex items-center gap-1.5 text-[10px] opacity-70">
@@ -553,12 +794,12 @@ const Chatbot: React.FC = () => {
                     </div>
                     {msg.text}
                     {msg.actions && msg.actions.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {msg.actions.map((action) => (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {msg.actions.slice(0, 3).map((action) => (
                           <button
                             key={action}
                             onClick={() => handleAction(action)}
-                            className="inline-flex items-center gap-1 rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/20"
+                            className="inline-flex items-center gap-1 rounded-full border border-primary/15 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary transition-colors hover:bg-primary/20"
                           >
                             {action}
                             {actionRoutes[action] && <ArrowUpRight className="h-3 w-3" />}
@@ -577,7 +818,7 @@ const Chatbot: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-surface text-foreground px-4 py-2 rounded-2xl rounded-bl-sm text-sm border border-border/50 shadow-sm">
+                  <div className="rounded-2xl rounded-bl-sm border border-border/50 bg-surface px-3.5 py-2 text-sm text-foreground shadow-sm">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">
                         <motion.div
@@ -596,7 +837,7 @@ const Chatbot: React.FC = () => {
                           className="w-1 h-1 bg-current rounded-full"
                         />
                       </div>
-                      <span>Typing...</span>
+                      <span>Thinking...</span>
                     </div>
                   </div>
                 </motion.div>
@@ -627,45 +868,65 @@ const Chatbot: React.FC = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="border-b border-border/50 px-4 pb-3"
+                  className="border-b border-border/50 bg-gradient-to-r from-primary/8 via-surface/50 to-accent/8 px-3.5 py-2.5"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Suggested questions</p>
+                  <div className="mb-2.5 flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                        <WandSparkles className="h-3.5 w-3.5" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-black uppercase leading-none tracking-[0.22em] text-primary">Suggested</p>
+                        <p className="mt-1 truncate text-[10px] leading-none text-muted-foreground">Tap a shortcut or keep typing</p>
+                      </div>
+                    </div>
                     <button
                       onClick={() => setShowSuggestions(false)}
-                      className="rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors"
+                      className="rounded-lg border border-border/40 bg-surface/70 p-1.5 text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
                       aria-label="Close suggestions"
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="space-y-2">
-                    {suggestionGroups.map((group) => (
-                      <div key={group.title} className="rounded-2xl border border-border/40 bg-surface/55 p-2">
-                        <div className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                          <group.icon className="h-3 w-3 text-primary" />
-                          {group.title}
-                        </div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {group.prompts.map((prompt) => (
-                            <button
-                              key={prompt}
-                              onClick={() => handleQuickPrompt(prompt)}
-                              className="rounded-full border border-border/50 bg-background/70 px-2.5 py-1 text-[11px] text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
-                            >
-                              {prompt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                    {visibleSuggestions.map((prompt, index) => {
+                      const meta = getSuggestionMeta(prompt);
+                      const Icon = meta.icon;
+
+                      return (
+                        <motion.button
+                          key={prompt}
+                          type="button"
+                          onClick={() => handleQuickPrompt(prompt)}
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.035 }}
+                          className="group flex min-h-9 items-center gap-2 rounded-xl border border-border/50 bg-surface/82 px-2.5 py-1.5 text-left text-[10px] font-bold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:bg-primary/10 hover:text-primary hover:shadow-[0_12px_30px_rgba(var(--primary-rgb),0.12)]"
+                        >
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                            <Icon className="h-3 w-3" />
+                          </span>
+                          <span className="min-w-0 truncate">{meta.label}</span>
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Input */}
-            <div className="border-t border-border/50 bg-background/65 p-4">
+            <div className="border-t border-border/50 bg-background/65 p-3.5">
+              {!showSuggestions && (
+                <button
+                  type="button"
+                  onClick={() => setShowSuggestions(true)}
+                  className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[10px] font-bold text-primary transition-colors hover:bg-primary/14"
+                >
+                  <WandSparkles className="h-3 w-3" />
+                  Show suggestions
+                </button>
+              )}
               <div className="flex gap-2">
                 <input
                   ref={inputRef}
@@ -674,7 +935,7 @@ const Chatbot: React.FC = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask about projects, skills, or contact..."
-                  className="min-w-0 flex-1 rounded-2xl border border-border/50 bg-surface px-4 py-3 text-sm text-foreground placeholder-muted-foreground transition-colors focus:border-primary focus:outline-none"
+                  className="min-w-0 flex-1 rounded-xl border border-border/50 bg-surface px-3.5 py-3 text-sm text-foreground placeholder-muted-foreground transition-colors focus:border-primary focus:outline-none"
                   aria-label="Chat message input"
                 />
                 <motion.button
@@ -682,7 +943,7 @@ const Chatbot: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSendMessage()}
                   disabled={!input.trim() || isTyping}
-                  className="rounded-2xl bg-primary p-3 text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl bg-primary p-3 text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                   aria-label="Send message"
                 >
                   <Send className="h-4 w-4" />
