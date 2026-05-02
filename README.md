@@ -6,10 +6,6 @@
 
 > **An intelligent, interactive portfolio powered by AI — built to simulate real conversations, showcase projects, and drive meaningful engagement.**
 
-🔗 **Live App (AI Studio):**
-https://ai.studio/apps/ba5d14af-9c3d-4f03-ae7d-d81441e7135e
-
----
 
 ## 🧠 What This Is
 
