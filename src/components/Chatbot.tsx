@@ -14,10 +14,19 @@ const quickPrompts = [
   'Show your top projects',
   'Tell me about your experience',
   'How can I contact you?',
+  'What technologies do you use?',
+  'Recommend a project',
+  'What is Vishant working on now?'
+];
+
+const defaultActions = [
+  'Show your top projects',
+  'Tell me about your experience',
+  'How can I contact you?',
   'What technologies do you use?'
 ];
 
-const createBotMessage = (text: string, actions?: string[]): Message => ({
+const createBotMessage = (text: string, actions: string[] = defaultActions): Message => ({
   id: `bot-${Date.now()}-${Math.random().toString(16).slice(2)}`,
   type: 'bot',
   text,
@@ -25,7 +34,105 @@ const createBotMessage = (text: string, actions?: string[]): Message => ({
   timestamp: Date.now()
 });
 
-const normalizeText = (text: string) => text.toLowerCase().replace(/[^\w\s]/g, '');
+const normalizeText = (text: string) => text.toLowerCase().replace(/[^\w\s]/g, '').trim();
+
+const filterActions = (actions: string[], messageText: string): string[] => {
+  const normalizedMessage = normalizeText(messageText);
+  const filtered = actions.filter((action) => normalizeText(action) !== normalizedMessage);
+  return filtered.length > 0 ? filtered : defaultActions.filter((action) => normalizeText(action) !== normalizedMessage);
+};
+
+const knowledgeEntries = [
+  {
+    keywords: ['arak 1', 'arak-1', 'pipeline inspection', 'robotic inspection', 'micro repair', 'ai inspection'],
+    response:
+      'ARAK-1 is a hybrid spider-wheel robotic inspection system for pipeline monitoring and micro-repair, built with AI-assisted damage detection, ROS simulation, and a compact repair nozzle. It was showcased at THRUST Tech Expo 2026.',
+    actions: ['Show your top projects', 'Recommend a project', 'Tell me about your experience']
+  },
+  {
+    keywords: ['military drone', 'medical supply', 'uav', 'uav system', 'mhcsd', 'medical logistics', 'defense medtech'],
+    response:
+      'The Military Health-Care Supply Drone is a GPS-denied autonomous UAV system designed for rapid medical payload delivery in hostile zones. It combines LiDAR, vision, AES-256 telemetry, and a thermally insulated payload bay for reliable cold-chain medical logistics.',
+    actions: ['Show your top projects', 'Recommend a project', 'Tell me about your experience']
+  },
+  {
+    keywords: ['noikix', 'rental saas', 'rental business', 'equipment rental'],
+    response:
+      'Noikix is a rental SaaS MVP that digitizes equipment rental workflows, availability calendars, and deposit management. It reduced inventory conflicts by 40% for pilot users and was built with React and Firebase.',
+    actions: ['Show your top projects', 'Tell me about your experience', 'What technologies do you use?']
+  },
+  {
+    keywords: ['maVionix', 'mavionix', 'ai saas', 'sme ai', 'sme platform'],
+    response:
+      'MaVionix is an AI SaaS initiative for SMEs, where Vishant helped define MVP scope, user flows, and product documentation. The focus is on workflow clarity, feature prioritization, and agile delivery for small business digital systems.',
+    actions: ['Tell me about your experience', 'Show your top projects', 'How can I contact you?']
+  },
+  {
+    keywords: ['srm campus delivery', 'campus logistics', 'campus delivery', 'hackathon'],
+    response:
+      'The SRM Campus Delivery project is a logistics MVP designed for on-campus deliveries with fast partner matching and real-time status. It targeted a 75% reduction in wait times and was built during a 48-hour hackathon.',
+    actions: ['Show your top projects', 'Recommend a project', 'Tell me about your experience']
+  },
+  {
+    keywords: ['pipeline maintenance', 'design registration', 'registered design', 'industrial design', 'ip'],
+    response:
+      'Vishant contributed to a registered design for a smart robotic pipeline maintenance device, documenting the device shape and configuration for industrial robotics applications.',
+    actions: ['Tell me about your experience', 'Show your top projects', 'How can I contact you?']
+  },
+  {
+    keywords: ['experience', 'background', 'career', 'journey', 'timeline', 'leadership', 'founder'],
+    response:
+      'He currently serves as Co-Founder and Product Lead at MaVionix, leading AI and robotics product strategy. His experience includes product lifecycle management, user research, and launching early-stage systems.',
+    actions: ['Tell me about your experience', 'What technologies do you use?', 'How can I contact you?']
+  },
+  {
+    keywords: ['education', 'library', 'iit', 'degree', 'college', 'study'],
+    response:
+      'Vishant is studying at IIT Madras in Management & Data Science while also pursuing a B.Tech in Computer Science and Data Science. He blends rigorous academics with hands-on AI and robotics product work.',
+    actions: ['Tell me about your experience', 'What technologies do you use?', 'Show your top projects']
+  },
+  {
+    keywords: ['skills', 'technology', 'tech stack', 'expertise', 'ai', 'ml', 'robotics', 'data'],
+    response:
+      'His core strengths include AI/ML, robotics systems, product strategy, data-driven decision making, GTM execution, and UX-driven product design. He builds systems that connect complex tech to practical business outcomes.',
+    actions: ['What technologies do you use?', 'Tell me about your experience', 'Show your top projects']
+  },
+  {
+    keywords: ['contact', 'connect', 'hire', 'reach', 'email', 'linkedin', 'github', 'website', 'resume'],
+    response:
+      'You can reach Vishant through his Contact page, LinkedIn, GitHub, or by downloading his resume. He is open to strategic product, AI, and robotics collaborations.',
+    actions: ['How can I contact you?', 'Show your top projects', 'Tell me about your experience']
+  },
+  {
+    keywords: ['availability', 'available', 'open for', 'open to', 'engagement', 'take on', 'project work'],
+    response:
+      'He is selective and available for founder-led AI, robotics, and product system engagements. He prefers 0-to-1 launches and strategic partnerships over low-budget maintenance work.',
+    actions: ['How can I contact you?', 'Tell me about your experience', 'Show your top projects']
+  },
+  {
+    keywords: ['based', 'location', 'where are you', 'location', 'meerut'],
+    response:
+      'Vishant is based in Meerut, Uttar Pradesh, India, and works globally with founder teams in hybrid and remote formats.',
+    actions: ['How can I contact you?', 'Tell me about your experience', 'Show your top projects']
+  },
+  {
+    keywords: ['price', 'budget', 'cost', 'investment', 'equity', 'partnership'],
+    response:
+      'His preferred engagements are structured around strategic product outcomes. Typical budgets start at INR 20L / $25k for meaningful AI and robotics work, with larger systems scoped for higher investment or equity partnerships.',
+    actions: ['How can I contact you?', 'Tell me about your experience', 'Show your top projects']
+  },
+  {
+    keywords: ['faq', 'question', 'q&a', 'helpful'],
+    response:
+      'You can ask me about his projects, experience, skills, contact information, or current product focus. I also know his availability, education, and the business outcomes he delivers.',
+    actions: ['What technologies do you use?', 'How can I contact you?', 'Tell me about your experience']
+  }
+];
+
+const getKnowledgeResponse = (normalized: string, messageText: string): Message | null => {
+  const match = knowledgeEntries.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
+  return match ? createBotMessage(match.response, filterActions(match.actions, messageText)) : null;
+};
 
 const getBotReply = (messageText: string): Message => {
   const normalized = normalizeText(messageText);
@@ -33,74 +140,107 @@ const getBotReply = (messageText: string): Message => {
   const fallbackActions = [
     'Show your top projects',
     'Tell me about your experience',
-    'How can I contact you?'
+    'How can I contact you?',
+    'What technologies do you use?'
   ];
 
-  if (/\b(thank you|thanks|thank|appreciate|awesome|great)\b/.test(normalized)) {
-    return createBotMessage('You\'re welcome! If you want, I can also walk you through Vishant\'s best projects or experience.', fallbackActions);
+  if (normalized.length === 0) {
+    return createBotMessage('Try typing a question about Vishant\'s projects, experience, or how to connect with him.', fallbackActions);
   }
 
-  if (/\b(help|what can you do|how can you help|what do you do|assist)\b/.test(normalized)) {
+  const knowledgeResponse = getKnowledgeResponse(normalized, messageText);
+  if (knowledgeResponse) {
+    return knowledgeResponse;
+  }
+
+  if (/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening)\b/.test(normalized)) {
     return createBotMessage(
-      'I can help you explore Vishant\'s portfolio, explain his experience, recommend projects, and show how to connect with him.',
+      'Hello! I\'m Vishant\'s AI assistant. I can share his top work, experience, technology stack, and contact details.',
       fallbackActions
+    );
+  }
+
+  if (/\b(thank you|thanks|thank|appreciate|awesome|great|nice)\b/.test(normalized)) {
+    return createBotMessage(
+      'You\'re welcome! Let me know if you want a recommendation from his Projects or a summary of his Experience.',
+      filterActions(fallbackActions, messageText)
+    );
+  }
+
+  if (/\b(help|what can you do|how can you help|what do you do|assist|capabilities|tell me about yourself)\b/.test(normalized)) {
+    return createBotMessage(
+      'I can help you explore Vishant\'s portfolio, explain his experience, recommend strong projects, and point you to his contact or social links.',
+      filterActions(fallbackActions, messageText)
     );
   }
 
   const intents = [
     {
-      keywords: ['project', 'work', 'portfolio', 'case study', 'demo'],
+      keywords: ['project', 'projects', 'work', 'portfolio', 'case study', 'demo', 'product engineering', 'solution', 'startup'],
       response:
-        'Vishant builds AI, SaaS, and robotics products with a focus on logistics, automation, and growth strategy. The Projects page highlights his top case studies and technical demos.',
-      actions: ['Show your top projects', 'Tell me about your experience', 'How can I contact you?']
+        'Vishant focuses on AI, robotics, and product-led software. His Projects page showcases the best case studies, including automation, logistics, and growth systems.',
+      actions: ['Show your top projects', 'Recommend a project', 'Tell me about your experience']
     },
     {
-      keywords: ['experience', 'background', 'career', 'journey', 'resume', 'cv'],
+      keywords: ['experience', 'background', 'career', 'journey', 'resume', 'cv', 'timeline', 'leadership'],
       response:
-        'He has built product-led AI and robotics experiences across SaaS, logistics, and automation. The Experience page shows his timeline, leadership work, and technical strengths.',
-      actions: ['Tell me about your experience', 'Show your top projects', 'How can I contact you?']
+        'He has built AI and robotics products from concept to launch, with strengths in product strategy, engineering leadership, and analytics-driven decisions.',
+      actions: ['Tell me about your experience', 'What technologies do you use?', 'How can I contact you?']
     },
     {
-      keywords: ['contact', 'hire', 'connect', 'collaborate', 'available'],
+      keywords: ['contact', 'hire', 'connect', 'collaborate', 'available', 'reach', 'email', 'linkedin', 'proposal'],
       response:
-        'The best way to reach him is through the Contact page or his LinkedIn profile. He\'s open to new product, AI, and robotics collaborations.',
+        'The Contact page is the best way to reach Vishant professionally. He\'s open to product, AI, robotics, and systems collaborations.',
       actions: ['How can I contact you?', 'Show your top projects', 'Tell me about your experience']
     },
     {
-      keywords: ['skill', 'skills', 'expertise', 'technology', 'tech', 'stack'],
+      keywords: ['skill', 'skills', 'expertise', 'technology', 'tech', 'stack', 'ai', 'ml', 'robotics', 'data', 'backend', 'frontend'],
       response:
-        'He specializes in AI/ML, product strategy, robotics systems, GTM execution, and data-driven decision making. He loves turning complex systems into usable products.',
+        'His strengths include AI/ML, robotics systems, product design, analytics, automation, and modern web engineering. He builds practical solutions for real business challenges.',
       actions: ['What technologies do you use?', 'Tell me about your experience', 'Show your top projects']
     },
     {
-      keywords: ['education', 'school', 'college', 'iit', 'degree'],
+      keywords: ['education', 'school', 'college', 'iit', 'degree', 'study', 'student'],
       response:
-        'Vishant is currently studying at IIT Madras with a strong emphasis on product management, AI, and analytics. Education supports his product and engineering mindset.',
+        'Vishant is studying at IIT Madras and blends academic rigor with real-world product experience in AI and engineering.',
       actions: ['Tell me about your experience', 'How can I contact you?', 'Show your top projects']
     },
     {
-      keywords: ['github', 'code', 'open source', 'repo'],
+      keywords: ['github', 'code', 'open source', 'repo', 'repository'],
       response:
-        'He shares code and technical experiments in public repositories. The Projects page has links to his featured work and open source contributions.',
+        'He shares code and technical experiments publicly, and his Projects page includes links to featured repositories and demo apps.',
       actions: ['Show your top projects', 'How can I contact you?', 'Tell me about your experience']
     },
     {
       keywords: ['linkedin'],
       response:
-        'LinkedIn is the best place to connect professionally with Vishant. You can find his profile link on the Contact page.',
+        'LinkedIn is the best place to connect professionally with Vishant. You can find the link on the Contact page.',
       actions: ['How can I contact you?', 'Tell me about your experience', 'Show your top projects']
+    },
+    {
+      keywords: ['recommend', 'suggest', 'best', 'top', 'priority'],
+      response:
+        'I can recommend a few of Vishant\'s most impressive projects. Start with his AI, automation, and product strategy work on the Projects page.',
+      actions: ['Recommend a project', 'Show your top projects', 'Tell me about your experience']
     }
   ];
 
   const matchedIntent = intents.find((intent) => intent.keywords.some((keyword) => normalized.includes(keyword)));
 
   if (matchedIntent) {
-    return createBotMessage(matchedIntent.response, matchedIntent.actions);
+    return createBotMessage(matchedIntent.response, filterActions(matchedIntent.actions, messageText));
+  }
+
+  if (/\b(what|where|how|when|who|why)\b/.test(normalized)) {
+    return createBotMessage(
+      'I can answer questions about Vishant\'s portfolio, experience, technologies, and contact details. Try asking about one of those topics.',
+      fallbackActions
+    );
   }
 
   return createBotMessage(
-    'That\'s a great question. I can help you explore Vishant\'s portfolio, share his experience, or point you to his contact details.',
-    fallbackActions
+    'That\'s an interesting question. I can help you learn more about Vishant\'s work, experience, or how to connect with him.',
+    filterActions(fallbackActions, messageText)
   );
 };
 

@@ -70,7 +70,7 @@ Accent:     text-gold or bg-accent
     --color-muted: var(--text-secondary);
     --color-muted-foreground: var(--text-secondary);
     --color-accent: var(--accent);
-    --color-accent-foreground: var(--surface);
+    --color-accent-foreground: var(--accent-foreground);
     --color-destructive: #EF4444;
     --color-destructive-foreground: #FFFFFF;
     --color-border: var(--border);
@@ -173,6 +173,7 @@ Accent:     text-gold or bg-accent
     --glass-border: rgba(226, 232, 240, 0.55);
     
     /* Semantic */
+    --accent-foreground: #0F172A;
     --gold: var(--accent);
     --gold-glass-bg: rgba(34, 211, 238, 0.08);
     --gold-glass-border: rgba(34, 211, 238, 0.16);
@@ -210,6 +211,7 @@ Accent:     text-gold or bg-accent
     --radius: 1rem;
     --glass-bg: rgba(255, 255, 255, 0.8);
     --glass-border: rgba(226, 232, 240, 0.55);
+    --accent-foreground: #0F172A;
     --gold: var(--accent);
     --gold-glass-bg: rgba(34, 211, 238, 0.08);
     --gold-glass-border: rgba(34, 211, 238, 0.16);
@@ -247,6 +249,7 @@ Accent:     text-gold or bg-accent
     --radius: 1rem;
     --glass-bg: rgba(15, 23, 42, 0.65);
     --glass-border: rgba(148, 163, 184, 0.16);
+    --accent-foreground: #E2E8F0;
     --gold: var(--accent);
     --gold-glass-bg: rgba(20, 184, 166, 0.12);
     --gold-glass-border: rgba(20, 184, 166, 0.24);

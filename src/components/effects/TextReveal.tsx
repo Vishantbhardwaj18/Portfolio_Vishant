@@ -8,7 +8,7 @@ interface TextRevealProps {
 }
 
 export function TextReveal({ text, className, delay = 0 }: TextRevealProps) {
-  const characters = text.split("");
+  const words = text.split(" ");
 
   const container = {
     hidden: { opacity: 0 },
@@ -41,14 +41,14 @@ export function TextReveal({ text, className, delay = 0 }: TextRevealProps) {
       whileInView="visible"
       viewport={{ once: true }}
     >
-      {characters.map((char, index) => (
-        <motion.span 
-          key={index} 
-          variants={child}
-          className={char === " " ? "mr-[0.2em]" : ""}
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
+      {words.map((word, wordIndex) => (
+        <span key={`${word}-${wordIndex}`} className="mr-[0.22em] inline-flex whitespace-nowrap">
+          {word.split("").map((char, charIndex) => (
+            <motion.span key={`${char}-${charIndex}`} variants={child}>
+              {char}
+            </motion.span>
+          ))}
+        </span>
       ))}
     </motion.div>
   );
