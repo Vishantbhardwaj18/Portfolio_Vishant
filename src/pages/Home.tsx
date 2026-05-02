@@ -75,6 +75,8 @@ export default function Home() {
       const px = (event.clientX - rect.left) / rect.width;
       const py = (event.clientY - rect.top) / rect.height;
 
+      card.style.setProperty("--mx", `${px * 100}%`);
+      card.style.setProperty("--my", `${py * 100}%`);
       tiltState.current.targetX = clamp((0.5 - py) * 18, -10, 10);
       tiltState.current.targetY = clamp((px - 0.5) * 18, -10, 10);
       tiltState.current.targetScale = 1.04;
@@ -175,13 +177,6 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="relative overflow-hidden pt-6">
-      {/* Enhanced Background Effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-3xl animate-float-reverse" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-primary/3 via-transparent to-transparent rounded-full blur-3xl" />
-      </div>
-
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Enhanced Hero Section */}
         <motion.section 
@@ -588,11 +583,12 @@ export default function Home() {
               initial={{ opacity: 0, y: 30, rotate: -2 }}
               animate={{ opacity: 1, y: 0, rotate: 0 }}
               transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
-              className="relative mx-auto w-full max-w-[420px] overflow-visible group/card"
+              className="relative mx-auto w-full max-w-[460px] overflow-visible group/card"
             >
               {/* Enhanced background effects */}
-              <div className="absolute inset-0 pointer-events-none rounded-[2rem] bg-[radial-gradient(circle_at_top,_rgba(6,182,212,0.14),transparent_45%)] blur-3xl opacity-70 scale-[1.03] animate-float-slow" />
-              <div className="absolute inset-0 pointer-events-none rounded-[2rem] bg-[radial-gradient(circle_at_bottom_right,_rgba(20,184,166,0.12),transparent_45%)] blur-3xl opacity-60 scale-[1.05] animate-float-reverse" />
+              <div className="absolute -inset-10 pointer-events-none rounded-[3rem] bg-[radial-gradient(circle_at_top,_rgba(6,182,212,0.28),transparent_45%)] blur-3xl opacity-80 scale-[1.03] animate-float-slow" />
+              <div className="absolute -inset-8 pointer-events-none rounded-[3rem] bg-[radial-gradient(circle_at_bottom_right,_rgba(20,184,166,0.22),transparent_45%)] blur-3xl opacity-70 scale-[1.05] animate-float-reverse" />
+              <div className="absolute -inset-1 rounded-[2.25rem] bg-gradient-to-br from-primary/45 via-accent/20 to-transparent opacity-75 blur-xl transition-opacity duration-500 group-hover/card:opacity-100" />
 
               {/* Floating accent elements */}
               <motion.div
@@ -627,40 +623,111 @@ export default function Home() {
                 <div className="w-6 h-6 bg-accent/60 rounded-lg animate-pulse" />
               </motion.div>
 
+              <motion.div
+                aria-hidden="true"
+                animate={{
+                  rotateX: [58, 72, 58],
+                  rotateZ: [0, 360],
+                  scale: [1, 1.06, 1],
+                }}
+                transition={{
+                  rotateZ: { repeat: Infinity, duration: 18, ease: "linear" },
+                  rotateX: { repeat: Infinity, duration: 6, ease: "easeInOut" },
+                  scale: { repeat: Infinity, duration: 5, ease: "easeInOut" },
+                }}
+                className="absolute -left-20 top-16 hidden h-44 w-44 rounded-full border border-primary/25 shadow-[0_0_70px_rgba(var(--primary-rgb),0.18)] md:block"
+                style={{
+                  transformStyle: "preserve-3d",
+                  background:
+                    "conic-gradient(from 90deg, transparent, rgba(var(--primary-rgb),0.22), transparent 42%, rgba(var(--accent-rgb),0.18), transparent)",
+                }}
+              >
+                <div className="absolute inset-5 rounded-full border border-primary/20" />
+                <div className="absolute inset-12 rounded-full border border-accent/20" />
+              </motion.div>
+
+              <motion.div
+                aria-hidden="true"
+                animate={{
+                  rotateY: [0, 360],
+                  rotateX: [18, -18, 18],
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  rotateY: { repeat: Infinity, duration: 14, ease: "linear" },
+                  rotateX: { repeat: Infinity, duration: 5, ease: "easeInOut" },
+                  y: { repeat: Infinity, duration: 4.5, ease: "easeInOut" },
+                }}
+                className="absolute -right-14 top-24 hidden h-24 w-24 rounded-[1.5rem] border border-accent/25 bg-accent/10 shadow-[0_0_60px_rgba(var(--accent-rgb),0.22)] backdrop-blur-xl md:block"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <span className="absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-primary/25 bg-primary/10" />
+                <span className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-primary/25" />
+              </motion.div>
+
+              <motion.div
+                aria-hidden="true"
+                animate={{ y: [0, 12, 0], rotate: [0, -5, 0] }}
+                transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+                className="absolute -right-16 bottom-24 hidden grid h-28 w-28 grid-cols-3 gap-2 rounded-[1.5rem] border border-primary/15 bg-surface/30 p-3 shadow-[0_24px_70px_rgba(var(--primary-rgb),0.14)] backdrop-blur-xl md:grid"
+              >
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                  <motion.span
+                    key={item}
+                    className="rounded-md bg-primary/25"
+                    animate={{ opacity: [0.25, 0.85, 0.25], scale: [0.85, 1.08, 0.85] }}
+                    transition={{ repeat: Infinity, duration: 1.8, delay: item * 0.08, ease: "easeInOut" }}
+                  />
+                ))}
+              </motion.div>
+
               <div
                 ref={cardRef}
-                className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-surface shadow-soft aspect-[3/4] transition-shadow duration-300 will-change-transform premium-border-card"
-                style={{ transformStyle: "preserve-3d", transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)" }}
+                className="relative overflow-hidden rounded-[2.25rem] border border-primary/25 bg-surface shadow-[0_34px_120px_rgba(6,182,212,0.18)] aspect-[3/4] transition-shadow duration-300 will-change-transform premium-border-card group"
+                style={{ transformStyle: "preserve-3d", transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)", "--mx": "50%", "--my": "50%" } as React.CSSProperties}
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.14),transparent_32%)] blur-3xl opacity-65"
+                  className="absolute inset-0 rounded-[2.25rem] bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),transparent_32%)] blur-3xl opacity-75"
                   style={{ transform: "translateZ(8px)" }}
                 />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-[2.25rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
+                  style={{ transform: "translateZ(58px)", background: "radial-gradient(circle at var(--mx) var(--my), rgba(34,211,238,0.32), transparent 28%)" }}
+                />
                 {/* Enhanced gradient overlays for image depth */}
-                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-primary/20 via-transparent to-accent/10 opacity-40 mix-blend-overlay pointer-events-none" style={{ transform: "translateZ(20px)" }} />
-                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" style={{ transform: "translateZ(15px)" }} />
+                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-primary/25 via-transparent to-accent/15 opacity-60 mix-blend-overlay pointer-events-none" style={{ transform: "translateZ(20px)" }} />
+                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-t from-black/65 via-black/5 to-transparent pointer-events-none" style={{ transform: "translateZ(15px)" }} />
+                <div className="absolute inset-0 opacity-[0.16] mix-blend-screen pointer-events-none" style={{ transform: "translateZ(34px)", backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "100% 18px" }} />
+                <motion.div
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-primary/30 via-accent/10 to-transparent mix-blend-screen pointer-events-none"
+                  animate={{ y: ["-35%", "420%"] }}
+                  transition={{ repeat: Infinity, duration: 4.2, ease: "easeInOut" }}
+                  style={{ transform: "translateZ(56px)" }}
+                />
                 
                 <div className="relative h-full w-full [transform-style:preserve-3d]">
-                  <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,_rgba(var(--primary-rgb),0.14),transparent_28%)]"
+                  <div className="absolute inset-0 rounded-[2.25rem] bg-[radial-gradient(circle_at_top,_rgba(var(--primary-rgb),0.14),transparent_28%)]"
                     style={{ transform: "translateZ(14px)" }}
                   />
                   <motion.img
                     animate={{
-                      scale: [1, 1.02, 1],
-                      rotateZ: [0, 0.5, 0]
+                      scale: [1.02, 1.06, 1.02],
+                      rotateZ: [0, 0.45, 0]
                     }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
                     src="/images/my-photo2.png"
                     alt="Vishant Bhardwaj"
-                    className="relative h-full w-full object-cover premium-border-card__image brightness-105 saturate-110"
+                    className="relative h-full w-full object-cover premium-border-card__image brightness-110 saturate-125 contrast-105"
                     style={{ transform: "translateZ(40px)" }}
                   />
                 </div>
 
                 {/* Enhanced top-right corner accent */}
                 <motion.div
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent shadow-[0_0_30px_rgba(6,182,212,0.65)]"
                   animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.8, 1, 0.8]
@@ -670,34 +737,9 @@ export default function Home() {
                 />
 
                 {/* Gloss effect */}
-                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-60 pointer-events-none" style={{ transform: "translateZ(45px)" }} />
+                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-70 pointer-events-none" style={{ transform: "translateZ(45px)" }} />
+                <div className="absolute inset-x-8 bottom-32 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" style={{ transform: "translateZ(60px)" }} />
               </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.75, duration: 0.6 }}
-                className="absolute -bottom-6 left-0 w-full rounded-3xl border border-primary/15 bg-surface/80 px-5 py-4 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                style={{ transformStyle: "preserve-3d", transform: "translateZ(54px)" }}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground font-black">Robotics</p>
-                    <p className="text-sm font-semibold text-primary">Autonomous Logistics</p>
-                  </div>
-                  <motion.span
-                    className="rounded-full bg-primary/10 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-primary font-black shadow-[0_0_15px_rgba(var(--primary-rgb),0.15)]"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    10x scale
-                  </motion.span>
-                </div>
-                <motion.div
-                  className="absolute inset-0 rounded-3xl bg-accent/5 opacity-0 hover:opacity-100 transition-opacity duration-300"
-                  initial={false}
-                />
-              </motion.div>
             </motion.div>
           </div>
         </motion.section>
@@ -1265,56 +1307,22 @@ export default function Home() {
         </section>
 
         <section className="mt-32 relative overflow-hidden">
-          {/* Enhanced background effects */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.14),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.12),transparent_26%)] pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-3xl blur-3xl opacity-40" />
-
-          {/* Floating accent elements */}
-          <motion.div
-            animate={{
-              rotate: [0, 360],
-              scale: [1, 1.1, 1],
-              y: [0, -10, 0]
-            }}
-            transition={{
-              rotate: { repeat: Infinity, duration: 30, ease: "linear" },
-              scale: { repeat: Infinity, duration: 4, ease: "easeInOut" },
-              y: { repeat: Infinity, duration: 6, ease: "easeInOut" }
-            }}
-            className="absolute top-10 right-10 w-16 h-16 border border-primary/20 bg-surface/60 rounded-full flex items-center justify-center shadow-2xl backdrop-blur-xl"
-          >
-            <Trophy className="w-8 h-8 text-primary/70" />
-          </motion.div>
-
-          <motion.div
-            animate={{
-              x: [0, 15, 0],
-              rotate: [0, -5, 0],
-              scale: [1, 1.05, 1]
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 8,
-              ease: "easeInOut",
-              delay: 2
-            }}
-            className="absolute bottom-10 left-10 w-12 h-12 border border-accent/20 bg-surface/60 rounded-2xl flex items-center justify-center shadow-2xl backdrop-blur-xl"
-          >
-            <Award className="w-6 h-6 text-accent/70" />
-          </motion.div>
-
-          <div className="relative rounded-[2rem] recognition-shell overflow-hidden">
+          <div className="relative overflow-hidden rounded-[2rem] border border-border bg-surface/90 shadow-[0_28px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:bg-surface/70">
             <div className="absolute inset-0 awards-grid-bg-light dark:awards-grid-bg opacity-20 pointer-events-none" />
-            <div className="absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.18),transparent_40%)] dark:bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.22),transparent_45%)] pointer-events-none" />
-            <div className="relative px-8 py-10 lg:px-12 lg:py-14">
+            <div className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.12),transparent)] pointer-events-none" />
+            <div className="relative px-6 py-8 sm:px-8 lg:px-10 lg:py-12">
               <ScrollReveal direction="up" delay={0.2}>
-                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 border-b border-slate-200/30 dark:border-slate-600/40 pb-8 relative">
-                  <div className="space-y-4 max-w-2xl">
-                    <h3 className="font-display text-5xl text-slate-900 dark:text-slate-100 tracking-tight relative inline-flex">
-                      RECOGNITION
-                      <span className="absolute -bottom-2 left-0 h-1.5 w-24 rounded-full bg-gradient-to-r from-primary via-accent to-primary animate-pulse-slow" />
+                <div className="relative flex flex-col gap-6 border-b border-border pb-7 lg:flex-row lg:items-end lg:justify-between">
+                  <div className="max-w-3xl space-y-4">
+                    <p className="inline-flex rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.25em] text-primary">
+                      Awards & Honors
+                    </p>
+                    <h3 className="font-display text-4xl font-black tracking-normal text-foreground md:text-5xl">
+                      Recognition
                     </h3>
-                    <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400 font-black">Awards & Honors</p>
+                    <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+                      Selected milestones across robotics, innovation programs, public recognition, and creator work.
+                    </p>
                   </div>
 
                   <motion.div
@@ -1322,31 +1330,80 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5, duration: 0.6 }}
-                    className="relative inline-flex min-w-[18rem] items-center justify-between gap-4 rounded-[1.75rem] border border-border bg-surface/90 px-6 py-4 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-xl text-left dark:shadow-[0_24px_60px_rgba(var(--primary-rgb),0.18)]"
+                    className="relative inline-flex min-w-[15rem] items-center gap-4 rounded-2xl border border-border bg-background/60 px-5 py-4 text-left shadow-sm"
                   >
-                    <div className="flex h-16 w-16 items-center justify-center rounded-3xl border border-primary/25 bg-surface shadow-[0_0_24px_rgba(var(--primary-rgb),0.18)]">
-                      <span className="text-3xl font-black text-primary">{achievements.length}+</span>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
+                      <span className="text-xl font-black text-primary">{achievements.length}+</span>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground font-black">Awards Won</p>
-                      <p className="text-sm font-semibold text-foreground">Premium AI recognition</p>
+                      <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-black">Recognitions</p>
+                      <p className="text-sm font-semibold text-foreground">Verified achievements</p>
                     </div>
                   </motion.div>
                 </div>
               </ScrollReveal>
 
               <ScrollReveal direction="up" delay={0.3}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-8">
+                <div className="grid grid-cols-1 gap-4 pt-7 md:grid-cols-2 lg:grid-cols-3">
                   {achievements.map((item, idx) => {
-                    const getBadge = (title: string) => {
-                      if (title.includes('Winner')) return { text: 'Winner', emoji: '🏆', classes: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30 shadow-[0_0_25px_rgba(249,234,154,0.18)]' };
-                      if (title.includes('Guinness')) return { text: 'Record', emoji: '🌍', classes: 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_25px_rgba(var(--primary-rgb),0.18)]' };
-                      if (title.includes('Finalist')) return { text: 'Finalist', emoji: '🚀', classes: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30 shadow-[0_0_25px_rgba(52,211,153,0.18)]' };
-                      if (title.includes('Creator')) return { text: 'Creator', emoji: '🎥', classes: 'bg-rose-500/20 text-rose-300 border-rose-400/30 shadow-[0_0_25px_rgba(244,63,94,0.18)]' };
-                      if (title.includes('Appreciation')) return { text: 'Honored', emoji: '⭐', classes: 'bg-violet-500/20 text-violet-300 border-violet-400/30 shadow-[0_0_25px_rgba(168,85,247,0.18)]' };
-                      return { text: 'Award', emoji: '🎖️', classes: 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_25px_rgba(6,182,212,0.18)]' };
-                    };
-                    const badge = getBadge(item.title);
+                    const Icon = item.icon;
+                    const badge = item.title.includes("Winner")
+                      ? "Winner"
+                      : item.title.includes("Guinness")
+                        ? "Record"
+                        : item.title.includes("Finalist")
+                          ? "Finalist"
+                          : item.title.includes("Creator")
+                            ? "Creator"
+                            : "Honor";
+                    const caption = item.title.includes("Winner")
+                      ? "Competition achievement"
+                      : item.title.includes("Guinness")
+                        ? "Global recognition"
+                        : item.title.includes("Creator")
+                          ? "Audience milestone"
+                          : item.title.includes("Finalist")
+                            ? "Selected finalist"
+                            : "Recognized contribution";
+                    const accents = [
+                      {
+                        label: "border-amber-400/25 bg-amber-400/10 text-amber-600 dark:text-amber-300",
+                        icon: "bg-amber-400/10 text-amber-600 border-amber-400/20 dark:text-amber-300",
+                        bar: "from-amber-400 via-yellow-300 to-primary",
+                        wash: "bg-amber-400/5",
+                      },
+                      {
+                        label: "border-cyan-400/25 bg-cyan-400/10 text-cyan-600 dark:text-cyan-300",
+                        icon: "bg-cyan-400/10 text-cyan-600 border-cyan-400/20 dark:text-cyan-300",
+                        bar: "from-cyan-400 via-primary to-accent",
+                        wash: "bg-cyan-400/5",
+                      },
+                      {
+                        label: "border-sky-400/25 bg-sky-400/10 text-sky-600 dark:text-sky-300",
+                        icon: "bg-sky-400/10 text-sky-600 border-sky-400/20 dark:text-sky-300",
+                        bar: "from-sky-400 via-blue-400 to-primary",
+                        wash: "bg-sky-400/5",
+                      },
+                      {
+                        label: "border-violet-400/25 bg-violet-400/10 text-violet-600 dark:text-violet-300",
+                        icon: "bg-violet-400/10 text-violet-600 border-violet-400/20 dark:text-violet-300",
+                        bar: "from-violet-400 via-fuchsia-400 to-primary",
+                        wash: "bg-violet-400/5",
+                      },
+                      {
+                        label: "border-rose-400/25 bg-rose-400/10 text-rose-600 dark:text-rose-300",
+                        icon: "bg-rose-400/10 text-rose-600 border-rose-400/20 dark:text-rose-300",
+                        bar: "from-rose-400 via-pink-400 to-primary",
+                        wash: "bg-rose-400/5",
+                      },
+                      {
+                        label: "border-emerald-400/25 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300",
+                        icon: "bg-emerald-400/10 text-emerald-600 border-emerald-400/20 dark:text-emerald-300",
+                        bar: "from-emerald-400 via-teal-400 to-accent",
+                        wash: "bg-emerald-400/5",
+                      },
+                    ];
+                    const accent = accents[idx % accents.length];
 
                     return (
                       <motion.div
@@ -1354,45 +1411,32 @@ export default function Home() {
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: idx * 0.12, duration: 0.55 }}
+                        transition={{ delay: idx * 0.08, duration: 0.45 }}
                         className="group h-full"
                       >
-                        <Magnetic strength={0.18}>
+                        <Magnetic strength={0.1}>
                           <motion.div
-                            whileHover={{ y: -8, scale: 1.02 }}
-                            transition={{ duration: 0.35, ease: 'easeOut' }}
-                            className="relative h-full overflow-hidden rounded-[2rem] border border-slate-200/20 bg-white/90 shadow-[0_20px_60px_rgba(15,23,42,0.08)] transition-all duration-300 group-hover:-translate-y-1 recognition-card lg:aspect-[5/4] lg:min-h-0"
+                            whileHover={{ y: -4 }}
+                            transition={{ duration: 0.25, ease: 'easeOut' }}
+                            className="relative h-full overflow-hidden rounded-2xl border border-border bg-background/55 p-5 shadow-sm transition-all duration-300 hover:border-primary/25 hover:bg-surface"
                           >
-                            <div className="absolute inset-x-6 top-6 h-20 rounded-full bg-primary/15 blur-3xl opacity-70 transition-all duration-500 group-hover:opacity-100 pointer-events-none" />
-                            <div className="absolute -top-6 -right-6 h-20 w-20 rounded-full bg-accent/10 blur-2xl opacity-40 transition-all duration-500 group-hover:opacity-90 pointer-events-none" />
-                            <div className="absolute bottom-6 left-6 h-20 w-20 rounded-full bg-violet-500/10 blur-3xl opacity-40 transition-all duration-500 group-hover:opacity-80 pointer-events-none" />
-
-                            <div className="relative z-10 p-5">
-                              <div className="mb-5 flex items-start justify-between gap-4">
-                                <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] ${badge.classes}`}>
-                                  <span>{badge.emoji}</span>
-                                  <span>{badge.text}</span>
-                                </div>
-                                <motion.div
-                                  whileHover={{ scale: 1.08 }}
-                                  transition={{ duration: 0.3 }}
-                                  className="relative inline-flex h-12 w-12 items-center justify-center rounded-3xl border border-border bg-surface text-foreground shadow-[0_0_0_10px_rgba(var(--primary-rgb),0.04)]"
-                                >
-                                  <div className="absolute inset-0 rounded-3xl bg-primary/20 opacity-55 blur-xl" />
-                                  <item.icon className="relative h-7 w-7 text-foreground" />
-                                </motion.div>
-                              </div>
-
-                              <h4 className="font-heading text-2xl font-bold tracking-tight text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">{item.title}</h4>
-                              <p className="text-sm uppercase tracking-[0.35em] text-muted-foreground">{item.org}</p>
-
-                              <div className="mt-5 h-px bg-border" />
-                              <div className="mt-3 text-[11px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
-                                <span>{item.title.includes('Winner') ? 'AI & robotics excellence' : item.title.includes('Finalist') ? 'Finalist recognition' : 'Prestige award'}</span>
+                            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${accent.bar}`} />
+                            <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full ${accent.wash} blur-2xl transition-opacity duration-300 group-hover:opacity-100`} />
+                            <div className="mb-5 flex items-start justify-between gap-4">
+                              <span className={`inline-flex rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] ${accent.label}`}>
+                                {badge}
+                              </span>
+                              <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${accent.icon}`}>
+                                <Icon className="h-5 w-5" />
                               </div>
                             </div>
 
-                            <div className="absolute inset-x-6 bottom-5 h-1 rounded-full bg-slate-200/20 dark:bg-slate-600/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                            <h4 className="font-heading text-xl font-bold leading-tight tracking-normal text-foreground transition-colors duration-300 group-hover:text-primary">{item.title}</h4>
+                            <p className="mt-3 text-xs font-black uppercase leading-5 tracking-[0.22em] text-muted-foreground">{item.org}</p>
+
+                            <div className="mt-5 border-t border-border pt-4">
+                              <p className="text-[11px] font-semibold text-muted-foreground">{caption}</p>
+                            </div>
                           </motion.div>
                         </Magnetic>
                       </motion.div>

@@ -313,7 +313,7 @@ function ProjectVisual({ project, index }: { project: Project; index: number }) 
         scale: 1.02,
       }}
       transition={{ type: "spring", stiffness: 180, damping: 18 }}
-      className="relative aspect-square overflow-hidden rounded-xl border border-gold/20 bg-linear-to-br from-card/95 to-card/75 shadow-[0_35px_140px_rgba(15,23,42,0.16)] glass dark:from-black/70 dark:to-black/50 dark:shadow-[0_35px_140px_rgba(0,0,0,0.5)] lg:aspect-4/5"
+      className="project-visual-card relative aspect-square overflow-hidden rounded-xl border shadow-[0_35px_140px_rgba(15,23,42,0.16)] dark:shadow-[0_35px_140px_rgba(0,0,0,0.5)] lg:aspect-4/5"
     >
       <motion.div
         style={{ y: gridY, rotate: cardRotate }}
@@ -335,7 +335,7 @@ function ProjectVisual({ project, index }: { project: Project; index: number }) 
         className="absolute inset-y-0 z-10 w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/15 to-transparent dark:via-white/8"
       />
 
-      <div className="absolute left-5 top-5 z-20 flex items-center gap-2 rounded-full border border-gold/30 bg-background/80 px-3 py-2 backdrop-blur-lg dark:bg-black/60">
+      <div className="absolute left-5 top-5 z-20 flex items-center gap-2 rounded-full border border-gold/30 bg-surface/90 px-3 py-2 backdrop-blur-lg dark:bg-surface/80">
         <motion.span 
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -344,7 +344,7 @@ function ProjectVisual({ project, index }: { project: Project; index: number }) 
         <span className="text-[9px] font-black uppercase tracking-[0.28em] text-gold">{project.status}</span>
       </div>
 
-      <div className="absolute right-5 top-5 z-20 rounded-full border border-gold/20 bg-background/70 px-3 py-2 text-[9px] font-black uppercase tracking-[0.24em] text-muted-foreground backdrop-blur-lg dark:border-white/10 dark:bg-white/[0.05]">
+      <div className="absolute right-5 top-5 z-20 rounded-full border border-gold/20 bg-surface/90 px-3 py-2 text-[9px] font-black uppercase tracking-[0.24em] text-muted-foreground backdrop-blur-lg dark:bg-surface/75">
         SYS-0{index + 1}
       </div>
 
@@ -372,7 +372,7 @@ function ProjectVisual({ project, index }: { project: Project; index: number }) 
             <motion.div
               key={metric.label}
               whileHover={{ y: -4, scale: 1.05 }}
-              className="rounded-2xl border border-gold/20 bg-background/80 p-3 backdrop-blur-lg dark:bg-black/50 hover:border-gold/40 transition-all"
+              className="project-inner-card rounded-2xl border p-3 backdrop-blur-lg hover:border-gold/40 transition-all"
             >
               <p className="font-display text-lg text-gold">{metric.value}</p>
               <p className="mt-1 text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground">
@@ -496,7 +496,7 @@ function ProjectCard({
                 variants={cardReveal}
                 transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6, scale: 1.02, boxShadow: "0 20px 50px rgba(198,161,74,0.1)" }}
-                className="rounded-3xl border border-gold/20 bg-linear-to-br from-card/80 to-card/60 p-6 glass transition-all group-hover:border-gold/30 dark:from-black/40 dark:to-black/20 hover:border-gold/40"
+                className="project-inner-card rounded-3xl border p-6 transition-all group-hover:border-gold/30 hover:border-gold/40"
               >
                 <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all">
                   <Icon className="h-5 w-5 text-gold" />
@@ -510,7 +510,7 @@ function ProjectCard({
           <div className="grid gap-5 sm:grid-cols-[0.8fr_1.2fr]">
             <motion.div
               whileHover={{ y: -6, boxShadow: "0 30px_80px_rgba(198,161,74,0.16)" }}
-              className="rounded-3xl border border-gold/30 bg-gradient-to-br from-gold/12 to-gold/6 p-6 glass transition-all"
+              className="project-inner-card rounded-3xl border p-6 transition-all"
             >
               <p className="text-[9px] font-black uppercase tracking-[0.28em] text-muted-foreground">
                 Primary Metric
@@ -528,7 +528,7 @@ function ProjectCard({
             </motion.div>
             <motion.div
               whileHover={{ y: -6, boxShadow: "0 30px_80px_rgba(15,23,42,0.12)" }}
-              className="rounded-3xl border border-gold/20 bg-gradient-to-br from-muted/8 to-muted/4 p-6 glass transition-all dark:from-white/[0.08] dark:to-white/[0.04]"
+              className="project-inner-card rounded-3xl border p-6 transition-all"
             >
               <p className="text-[9px] font-black uppercase tracking-[0.28em] text-muted-foreground">Tech Stack</p>
               <div className="mt-5 flex flex-wrap gap-2.5">
@@ -655,7 +655,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onWheel={handleWheel}
-        className="relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-xl border border-gold/20 bg-card/95 shadow-[0_40px_160px_rgba(15,23,42,0.24)] glass dark:bg-card/90 dark:shadow-[0_40px_160px_rgba(0,0,0,0.65)]"
+        className="project-section-card relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-xl border shadow-[0_40px_160px_rgba(15,23,42,0.24)] dark:shadow-[0_40px_160px_rgba(0,0,0,0.65)]"
       >
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(198,161,74,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(198,161,74,0.045)_1px,transparent_1px)] bg-[size:28px_28px]" />
         <div className="absolute left-0 right-0 top-0 z-30 h-px bg-gold/10">
@@ -666,7 +666,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
         </div>
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 z-20 rounded-lg border border-gold/20 bg-background/70 p-3 text-gold transition-colors hover:bg-gold/10 dark:bg-black/40"
+          className="absolute right-5 top-5 z-20 rounded-lg border border-gold/20 bg-surface/90 p-3 text-gold transition-colors hover:bg-gold/10 dark:bg-surface/80"
           aria-label="Close dossier"
         >
           <X className="h-5 w-5" />
@@ -675,10 +675,10 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
         <div ref={modalScrollRef} className="relative grid max-h-[92vh] overflow-y-auto lg:grid-cols-[0.72fr_1fr]">
           <motion.aside
             style={{ y: leftPanelY }}
-            className="rounded-3xl border-b border-gold/10 bg-muted/30 p-8 dark:bg-black/25 lg:border-b-0 lg:border-r"
+            className="border-b border-gold/10 bg-surface/70 p-8 dark:bg-surface/55 lg:border-b-0 lg:border-r"
           >
             <div className="sticky top-8 space-y-8">
-              <div className="flex h-52 items-center justify-center rounded-3xl border border-gold/15 bg-gold/[0.035]">
+              <div className="project-inner-card flex h-52 items-center justify-center rounded-3xl border">
                 <motion.div
                   style={{ y: iconFloatY }}
                   animate={{ scale: [1, 1.05, 1], rotate: [0, 3, 0] }}
@@ -705,7 +705,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
 
               <div className="grid grid-cols-2 gap-3">
                 {[project.stats, ...project.metrics].slice(0, 4).map((metric) => (
-                  <div key={metric.label} className="rounded-lg border border-muted/15 bg-card/70 p-4 dark:bg-black/20">
+                  <div key={metric.label} className="project-inner-card rounded-lg border p-4">
                     <p className="font-display text-2xl text-gold">{metric.value}</p>
                     <p className="mt-1 text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                       {metric.label}
@@ -745,7 +745,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
                 { icon: Zap, title: "Solution", body: project.solution },
                 { icon: Gauge, title: "Impact", body: project.impact },
               ].map((item) => (
-                <div key={item.title} className="rounded-2xl border border-muted/15 bg-muted/[0.025] p-5 glass">
+                <div key={item.title} className="project-inner-card rounded-2xl border p-5">
                   <item.icon className="mb-5 h-5 w-5 text-gold" />
                   <h4 className="text-[10px] font-black uppercase tracking-[0.28em] text-gold">{item.title}</h4>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.body}</p>
@@ -765,7 +765,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.08 * index }}
-                    className="flex gap-4 rounded-xl border border-muted/15 bg-card/70 p-4 dark:bg-black/20"
+                    className="project-inner-card flex gap-4 rounded-xl border p-4"
                   >
                     <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-gold" />
                     <p className="text-sm leading-7 text-muted-foreground">{item}</p>
@@ -780,7 +780,7 @@ function DossierModal({ project, onClose }: { project: Project; onClose: () => v
                 { icon: Radio, label: "System State", value: project.status },
                 { icon: Thermometer, label: "Operating Layer", value: project.systemTag },
               ].map((item) => (
-                <div key={item.label} className="rounded-xl border border-gold/15 bg-gold/[0.035] p-5">
+                <div key={item.label} className="project-inner-card rounded-xl border p-5">
                   <item.icon className="mb-4 h-5 w-5 text-gold" />
                   <p className="text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground">{item.label}</p>
                   <p className="mt-2 text-sm font-black uppercase tracking-[0.16em] text-foreground">{item.value}</p>
@@ -913,7 +913,7 @@ export default function Projects() {
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="relative mb-16 overflow-hidden rounded-3xl border border-gold/20 bg-gradient-to-br from-card/85 to-card/65 p-8 text-center shadow-[0_40px_160px_rgba(15,23,42,0.18)] glass dark:from-black/40 dark:to-black/20 dark:shadow-[0_40px_160px_rgba(0,0,0,0.45)] md:p-14 lg:mb-20 lg:p-20"
+          className="project-section-card relative mb-8 overflow-hidden rounded-3xl border p-5 text-center md:p-8 lg:mb-10 lg:p-9"
         >
           <motion.div
             style={{ scale: heroGlowScale }}
@@ -927,12 +927,12 @@ export default function Projects() {
             transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
             className="absolute right-4 top-0"
           >
-            <Rocket className="h-72 w-72 text-gold/20" />
+            <Rocket className="h-56 w-56 text-gold/20" />
           </motion.div>
 
           <motion.div variants={fadeUp} className="relative z-10 mx-auto max-w-5xl text-center">
             <motion.div 
-              className="mb-8 inline-flex items-center justify-center gap-3 rounded-3xl border border-gold/30 bg-gold/8 px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.32em] text-gold backdrop-blur-lg"
+              className="mb-4 inline-flex items-center justify-center gap-2 rounded-2xl border border-gold/30 bg-gold/8 px-4 py-2 text-[9px] font-black uppercase tracking-[0.24em] text-gold backdrop-blur-lg"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 200 }}
             >
@@ -944,23 +944,35 @@ export default function Projects() {
               Product Engineering Showcase
             </motion.div>
 
-            <h1 className="font-display text-responsive-title font-black uppercase leading-[0.78] tracking-tighter text-foreground">
-              <TextReveal text="SELECTED" className="mx-auto justify-center" />
-              <TextReveal
-                text="WORK."
-                delay={0.16}
-                className="mt-3 mx-auto justify-center bg-gradient-to-r from-gold via-gold/80 to-gold bg-clip-text text-transparent text-glow"
-              />
+            <h1 className="font-display text-[clamp(2.2rem,6vw,4.8rem)] font-black uppercase leading-[0.9] tracking-tight text-foreground">
+              <motion.span
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="block"
+              >
+                SELECTED
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}
+                className="mt-1 block bg-gradient-to-r from-gold via-gold/80 to-gold bg-clip-text text-transparent text-glow"
+              >
+                WORK.
+              </motion.span>
             </h1>
 
-            <p className="mx-auto mt-9 max-w-3xl text-xl font-light leading-9 text-foreground/90 md:text-2xl">
+            <p className="mx-auto mt-4 max-w-2xl text-base font-light leading-7 text-foreground/90 md:text-lg">
               Building Autonomous Systems, AI Products & Real-World Engineering Solutions
             </p>
-            <p className="mx-auto mt-6 max-w-2xl text-xs font-black uppercase tracking-[0.42em] text-gold/70">
+            <p className="mx-auto mt-2 max-w-xl text-[10px] font-black uppercase leading-5 tracking-[0.22em] text-gold/70">
               Logic & Hardware / 0 to 1 Systems / Field-Tested Product Thinking
             </p>
 
-            <div className="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-3">
+            <div className="mx-auto mt-5 grid max-w-2xl gap-2.5 sm:grid-cols-3">
               {heroMetrics.map((metric) => {
                 const Icon = metric.icon;
                 return (
@@ -968,17 +980,17 @@ export default function Projects() {
                     key={metric.label}
                     whileHover={{ y: -8, scale: 1.04 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group rounded-3xl border border-gold/25 bg-gradient-to-br from-gold/8 to-gold/4 p-6 glass backdrop-blur-lg hover:border-gold/40 hover:shadow-[0_20px_60px_rgba(198,161,74,0.15)] transition-all dark:from-gold/12 dark:to-gold/6"
+                    className="project-inner-card group rounded-2xl border p-3 hover:border-gold/40 hover:shadow-[0_20px_60px_rgba(198,161,74,0.15)] transition-all"
                   >
                     <motion.div 
                       animate={{ rotate: [0, 6, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold/15 group-hover:bg-gold/25 transition-all"
+                      className="mb-1.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gold/15 group-hover:bg-gold/25 transition-all"
                     >
-                      <Icon className="h-6 w-6 text-gold" />
+                      <Icon className="h-4 w-4 text-gold" />
                     </motion.div>
-                    <p className="font-display text-4xl font-bold text-gold">{metric.value}</p>
-                    <p className="mt-2 text-[9px] font-black uppercase tracking-[0.22em] text-muted-foreground group-hover:text-foreground transition-colors">
+                    <p className="font-display text-2xl font-bold text-gold">{metric.value}</p>
+                    <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground group-hover:text-foreground transition-colors">
                       {metric.label}
                     </p>
                   </motion.div>
@@ -988,7 +1000,7 @@ export default function Projects() {
           </motion.div>
         </motion.header>
 
-        <section className="sticky top-20 z-30 mb-20 space-y-5 rounded-3xl border border-gold/15 bg-gradient-to-b from-background/85 to-background/75 p-5 backdrop-blur-2xl glass dark:from-black/60 dark:to-black/50">
+        <section className="project-section-card sticky top-20 z-30 mb-20 space-y-5 rounded-3xl border p-5">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative min-w-0 flex-1">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gold/70" />
@@ -996,7 +1008,7 @@ export default function Projects() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search projects, metrics, tech stacks..."
-                className="h-13 w-full rounded-2xl border border-gold/25 bg-background/80 pl-11 pr-4 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 focus:border-gold/50 focus:shadow-[0_0_50px_rgba(198,161,74,0.12)] dark:border-gold/20 dark:bg-black/30 dark:focus:shadow-[0_0_50px_rgba(198,161,74,0.08)]"
+                className="h-13 w-full rounded-2xl border border-gold/25 bg-surface/90 pl-11 pr-4 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 focus:border-gold/50 focus:shadow-[0_0_50px_rgba(198,161,74,0.12)] dark:border-gold/20 dark:bg-surface/80 dark:focus:shadow-[0_0_50px_rgba(198,161,74,0.08)]"
               />
             </div>
 
@@ -1014,7 +1026,7 @@ export default function Projects() {
                     className={`relative inline-flex h-13 items-center gap-2 overflow-hidden border px-4 text-[10px] font-black uppercase tracking-[0.22em] transition-all md:px-5 ${
                       isActive
                         ? "border-gold bg-gradient-to-r from-gold to-gold/90 text-black shadow-[0_0_40px_rgba(198,161,74,0.4)]"
-                        : "border-gold/25 bg-card/60 text-muted-foreground hover:border-gold/50 hover:text-gold hover:bg-gold/8 dark:bg-black/30 dark:border-gold/20"
+                        : "border-gold/25 bg-surface/80 text-muted-foreground hover:border-gold/50 hover:text-gold hover:bg-gold/8 dark:bg-surface/70 dark:border-gold/20"
                     }`}
                   >
                     {isActive && (
@@ -1048,7 +1060,7 @@ export default function Projects() {
                 className={`shrink-0 border px-4 py-2 text-[9px] font-black uppercase tracking-[0.18em] transition-all ${
                   activeTag === tag
                     ? "border-gold bg-gradient-to-r from-gold/20 to-gold/10 text-gold shadow-[0_0_30px_rgba(198,161,74,0.1)]"
-                    : "border-gold/20 bg-background/50 text-muted-foreground hover:border-gold/50 hover:text-gold hover:bg-gold/8 dark:border-gold/15 dark:bg-black/30 dark:hover:bg-gold/5"
+                    : "border-gold/20 bg-surface/80 text-muted-foreground hover:border-gold/50 hover:text-gold hover:bg-gold/8 dark:border-gold/15 dark:bg-surface/70 dark:hover:bg-gold/5"
                 }`}
               >
                 {tag}
@@ -1076,7 +1088,7 @@ export default function Projects() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl border border-gold/25 bg-gradient-to-br from-gold/8 to-gold/4 p-12 text-center glass dark:from-gold/12 dark:to-gold/6"
+            className="project-section-card rounded-3xl border p-12 text-center"
           >
             <Search className="mx-auto mb-4 h-8 w-8 text-gold/40" />
             <p className="text-[10px] font-black uppercase tracking-[0.32em] text-gold">No matching systems</p>

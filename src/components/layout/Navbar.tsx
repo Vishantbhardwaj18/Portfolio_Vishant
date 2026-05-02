@@ -21,14 +21,16 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-xl shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-[90] border-b-2 border-primary/35 bg-background/90 backdrop-blur-xl shadow-sm">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px gradient-spectrum opacity-70" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-[-2px] h-1 gradient-spectrum opacity-95 shadow-[0_0_18px_rgba(var(--primary-rgb),0.35)]" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="group flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm transition-transform duration-500 group-hover:-translate-y-0.5">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl colorful-border text-primary shadow-sm transition-transform duration-500 group-hover:-translate-y-0.5">
               <span className="font-heading text-lg font-semibold">VB</span>
             </div>
-            <span className="font-semibold uppercase tracking-[0.2em] text-subtext text-xs hidden sm:inline">Vishant Bhardwaj</span>
+            <span className="font-semibold uppercase tracking-[0.2em] text-subtext text-xs hidden sm:inline group-hover:bg-gradient-to-r group-hover:from-primary group-hover:via-violet-500 group-hover:to-rose-500 group-hover:bg-clip-text group-hover:text-transparent">Vishant Bhardwaj</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -38,7 +40,7 @@ export function Navbar() {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "text-sm uppercase tracking-[0.2em] transition-colors duration-200 py-1",
+                  "relative text-sm uppercase tracking-[0.2em] transition-colors duration-200 py-1",
                   location.pathname === item.path
                     ? "text-primary font-semibold"
                     : "text-subtext hover:text-text"
@@ -48,13 +50,13 @@ export function Navbar() {
                 {location.pathname === item.path && (
                   <motion.div
                     layoutId="nav-underline"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full gradient-spectrum"
                   />
                 )}
               </Link>
             ))}
             <div className="flex items-center space-x-3 pl-4 border-l border-border/70">
-              <Button asChild variant="default" size="sm" className="hidden lg:inline-flex rounded-2xl border border-border bg-primary text-primary-foreground px-4 py-2 text-xs font-semibold tracking-[0.16em]">
+              <Button asChild variant="default" size="sm" className="hidden lg:inline-flex rounded-2xl border border-border gradient-spectrum text-primary-foreground px-4 py-2 text-xs font-semibold tracking-[0.16em] shadow-[0_14px_40px_rgba(var(--primary-rgb),0.16)]">
                 <Link to="/resume">
                   <Rocket className="h-3 w-3" /> Resume
                 </Link>
@@ -94,7 +96,7 @@ export function Navbar() {
              initial={{ opacity: 0, height: 0 }}
              animate={{ opacity: 1, height: "auto" }}
              exit={{ opacity: 0, height: 0 }}
-             className="md:hidden bg-background border-b border-border"
+             className="md:hidden border-b border-border bg-background/95 backdrop-blur-xl"
           >
             <div className="px-4 pt-4 pb-8 space-y-4">
               {navItems.map((item) => (
@@ -110,6 +112,16 @@ export function Navbar() {
                   {item.name}
                 </Link>
               ))}
+              <Link
+                to="/resume"
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "block px-4 py-4 text-xs font-black uppercase tracking-[0.4em] transition-all",
+                  location.pathname === "/resume" ? "text-primary bg-primary/10 border-l-4 border-primary" : "text-subtext hover:text-primary hover:bg-surface"
+                )}
+              >
+                Resume
+              </Link>
             </div>
           </motion.div>
         )}

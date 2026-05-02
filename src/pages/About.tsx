@@ -1,11 +1,10 @@
 ﻿import * as React from "react"
 import { motion } from "framer-motion";
-import { GraduationCap, Briefcase, Award, Code, Cpu, Layout, Users, BarChart3, Palette, Calendar, MapPin, Star, ArrowRight, Download, Mail } from "lucide-react";
+import { GraduationCap, Briefcase, Award, Code, Cpu, Layout, Users, BarChart3, Palette, Calendar, MapPin, Star, BookOpen, FileCheck2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TextReveal } from "../components/effects/TextReveal";
 import { NumberTicker } from "../components/effects/NumberTicker";
-import myPhoto from "../images/my-photo2.png";
 
 const education = [
   {
@@ -133,6 +132,21 @@ const extraCurriculars = [
 
 const gallerySlides = [
   {
+    src: "/images/delhi.jpeg",
+    title: "MaVionix at Delhi Exhibition",
+    description: "Showcasing an AI-based digital services platform for rural inclusion through live demos and project storytelling."
+  },
+  {
+    src: "/images/uoj.jpeg",
+    title: "University of Jammu Showcase",
+    description: "Collaborating with participants and delegates while presenting hands-on technology and robotics work."
+  },
+  {
+    src: "/images/iithyd.jpeg",
+    title: "IIT Hyderabad Tech Expo",
+    description: "Representing MaVionix with prototypes, technical architecture, and product vision at a national innovation platform."
+  },
+  {
     src: "/images/image1.jpeg",
     title: "Innovation & Creativity",
     description: "Exploring new ideas and pushing boundaries in product development."
@@ -216,14 +230,47 @@ export default function About() {
   }, []);
 
   return (
-    <div className="py-20 lg:py-32 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative overflow-hidden py-16 text-foreground lg:py-24">
+      <div
+        className="pointer-events-none absolute inset-0 z-0 opacity-70"
+        style={{
+          background:
+            "radial-gradient(circle at 78% 8%, rgba(var(--primary-rgb), 0.11), transparent 30%), radial-gradient(circle at 14% 52%, rgba(var(--violet-rgb), 0.08), transparent 28%)",
+        }}
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ backgroundPosition: ["0px 0px", "76px 76px"] }}
+        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.06] bg-[linear-gradient(rgba(var(--primary-rgb),0.38)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--violet-rgb),0.32)_1px,transparent_1px)] bg-[size:76px_76px]"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ backgroundPosition: ["0px 0px", "24px 24px"] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,rgba(var(--text-rgb),0.42)_1px,transparent_0)] bg-[size:4px_4px]"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ scale: [1, 1.18, 1], opacity: [0.05, 0.12, 0.05], x: [0, -24, 0], y: [0, 18, 0] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute right-[-10%] top-0 z-0 h-[28rem] w-[28rem] rounded-full bg-gold/10 blur-[150px]"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ scale: [1, 1.24, 1], opacity: [0.04, 0.11, 0.04], x: [0, 30, 0], y: [0, -22, 0] }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        className="pointer-events-none absolute bottom-0 left-[-12%] z-0 h-[32rem] w-[32rem] rounded-full bg-gold/10 blur-[160px]"
+      />
+      <div
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <motion.header
           variants={stagger}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="mb-16"
+          className="mb-10 lg:mb-12"
         >
           <motion.div
             variants={stagger}
@@ -231,14 +278,14 @@ export default function About() {
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-stretch"
+            className="grid gap-6 lg:grid-cols-[1.2fr_0.9fr] lg:items-stretch"
           >
             <motion.section
               variants={fadeUp}
               transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="overflow-hidden rounded-4xl border border-border/50 bg-surface/90 shadow-[0_40px_120px_rgba(15,23,42,0.12)]"
+              className="about-section-card overflow-hidden rounded-4xl border"
             >
-              <div className="relative h-[420px] sm:h-[520px] lg:h-[520px] overflow-hidden">
+              <div className="relative h-[330px] overflow-hidden sm:h-[430px] lg:h-[500px]">
                 <motion.div
                   className="absolute inset-0 border-4 border-accent/40 rounded-4xl p-3"
                   animate={{
@@ -271,22 +318,22 @@ export default function About() {
                   />
                 </motion.div>
                 <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/10 to-transparent rounded-4xl" />
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                  <span className="inline-flex rounded-full bg-accent/10 px-3 py-1 text-xs uppercase tracking-[0.3em] text-accent-foreground">
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                  <span className="inline-flex rounded-full bg-accent/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
                     Visual Storytelling
                   </span>
-                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                     {slide.title}
                   </h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-200 sm:text-base">
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-200">
                     {slide.description}
                   </p>
                 </div>
               </div>
 
-              <div className="border-t border-border/60 bg-surface/95 px-5 py-4 sm:px-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-3">
+              <div className="border-t border-border/60 bg-surface/95 px-4 py-3 sm:px-6 dark:bg-surface/80">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-wrap items-center gap-2">
                     {gallerySlides.map((item, idx) => (
                       <button
                         key={item.src}
@@ -296,18 +343,18 @@ export default function About() {
                       />
                     ))}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setActiveSlide((prev) => (prev - 1 + gallerySlides.length) % gallerySlides.length)}
-                      className="rounded-full border border-border/70 bg-slate-950/80 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900"
+                      className="rounded-full border border-border/70 bg-foreground px-3.5 py-1.5 text-xs font-semibold text-background transition hover:bg-foreground/90"
                     >
                       Previous
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveSlide((prev) => (prev + 1) % gallerySlides.length)}
-                      className="rounded-full border border-border/70 bg-accent px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-accent/95"
+                      className="rounded-full border border-border/70 bg-accent px-3.5 py-1.5 text-xs font-semibold text-slate-950 transition hover:bg-accent/95"
                     >
                       Next
                     </button>
@@ -316,36 +363,53 @@ export default function About() {
               </div>
             </motion.section>
 
-            <div className="space-y-12 lg:max-w-lg">
-              <div className="space-y-6">
+            <div className="space-y-5 lg:max-w-lg">
+              <div className="about-section-card rounded-4xl border p-5 sm:p-6">
                 <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium uppercase tracking-[0.25em] text-accent">
                   About Me
                 </span>
-                <h1 className="font-display text-5xl sm:text-6xl md:text-7xl tracking-tight leading-none">
-                  <TextReveal text="About" /> <span className="text-accent"><TextReveal text="Me" delay={0.2} /></span>
+                <h1 className="mt-4 font-display text-5xl font-black tracking-tight leading-none sm:text-6xl md:text-7xl">
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.55, ease: "easeOut" }}
+                    className="inline-block"
+                  >
+                    About
+                  </motion.span>{" "}
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.12, duration: 0.55, ease: "easeOut" }}
+                    className="inline-block text-accent"
+                  >
+                    Me
+                  </motion.span>
                 </h1>
-                <p className="text-lg leading-8 text-muted-foreground">
+                <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
                   I am a results-driven entrepreneur and product leader who blends technical rigor with creative problem solving. My work centers on building high-impact products, guiding data-driven decisions, and designing experiences people love.
                 </p>
               </div>
 
-              <div className="mx-auto max-w-[28rem] rounded-4xl border border-accent/15 bg-accent/5 p-6 shadow-[0_30px_80px_rgba(6,182,212,0.08)] dark:border-accent/20 dark:bg-accent/10">
-                <p className="text-sm uppercase tracking-[0.3em] text-accent-foreground mb-4">Key Achievements</p>
-                <div className="grid grid-cols-4 gap-4">
+              <div className="about-accent-card rounded-4xl border p-4 shadow-[0_20px_60px_rgba(6,182,212,0.08)] sm:p-5">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Key Achievements</p>
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {achievements.map((achievement, idx) => (
                     <motion.div
                       key={idx}
                       whileHover={{ y: -5, scale: 1.01 }}
-                      className="rounded-3xl bg-card/80 p-4 border border-accent/10 shadow-sm transition-transform duration-300 dark:border-accent/30 dark:bg-black/20"
+                      className="about-inner-card rounded-2xl border p-3.5 shadow-sm transition-transform duration-300"
                     >
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        <div className="text-2xl font-semibold text-foreground dark:text-foreground">
+                      <div className="flex flex-col gap-1.5">
+                        <div className="text-xl font-semibold text-foreground dark:text-foreground">
                           <NumberTicker value={parseInt(achievement.metric)} />
                           {achievement.metric.includes('+') ? '+' : achievement.metric.includes('%') ? '%' : ''}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-foreground dark:text-foreground">{achievement.label}</p>
-                          <p className="text-xs text-muted-foreground dark:text-muted-foreground/75">{achievement.description}</p>
+                          <p className="text-sm font-semibold leading-5 text-foreground dark:text-foreground">{achievement.label}</p>
+                          <p className="mt-0.5 text-xs leading-4 text-muted-foreground dark:text-muted-foreground/75">{achievement.description}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -356,14 +420,14 @@ export default function About() {
           </motion.div>
 </motion.header>
 
-        <div className="grid gap-20 lg:grid-cols-[1.3fr_0.9fr]">
-          <div className="space-y-16">
+        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.85fr] lg:items-start">
+          <div className="space-y-10">
             <motion.section
               variants={fadeUp}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
-              className="space-y-8 rounded-4xl border border-border/50 bg-surface/90 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)]"
+              className="about-section-card space-y-6 rounded-4xl border p-6 sm:p-8"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -376,36 +440,41 @@ export default function About() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="rounded-3xl border border-accent/10 bg-accent/5 p-5 transition-all">
+                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="about-inner-card rounded-3xl border p-5 transition-all">
                   <p className="text-sm uppercase tracking-[0.25em] text-accent">Founder Mindset</p>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">Co-founded MaVionix and shaped product strategy with a focus on launching real business value.</p>
                 </motion.div>
-                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="rounded-3xl border border-accent/10 bg-accent/5 p-5 transition-all">
+                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="about-inner-card rounded-3xl border p-5 transition-all">
                   <p className="text-sm uppercase tracking-[0.25em] text-accent">Technical Leadership</p>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">Combining AI, data engineering and systems design to create scalable product experiences.</p>
                 </motion.div>
-                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="rounded-3xl border border-accent/10 bg-accent/5 p-5 transition-all">
+                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="about-inner-card rounded-3xl border p-5 transition-all">
                   <p className="text-sm uppercase tracking-[0.25em] text-accent">Design-led Thinking</p>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">Translating user insights into polished interfaces, flows, and frictionless digital journeys.</p>
                 </motion.div>
-                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="rounded-3xl border border-accent/10 bg-accent/5 p-5 transition-all">
+                <motion.div whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.15)" }} className="about-inner-card rounded-3xl border p-5 transition-all">
                   <p className="text-sm uppercase tracking-[0.25em] text-accent">Data-first Execution</p>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">Using metrics, experimentation and analytics to validate product decisions and accelerate growth.</p>
                 </motion.div>
               </div>
             </motion.section>
 
-            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="space-y-6">
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card space-y-5 rounded-4xl border p-6 sm:p-8">
               <div className="flex items-center gap-3">
-                <Briefcase className="h-5 w-5 text-accent" />
-                <h2 className="font-heading text-xl uppercase tracking-[0.25em] text-accent">Experience</h2>
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <Briefcase className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Professional work</p>
+                  <h2 className="text-2xl font-semibold text-foreground">Experience</h2>
+                </div>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {experience.map((exp, idx) => (
                   <motion.div
                     key={idx}
                     whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }}
-                    className="group overflow-hidden rounded-[1.75rem] border border-border/50 bg-surface/95 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                    className="about-inner-card group overflow-hidden rounded-[1.5rem] border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                   >
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
                       <div>
@@ -431,14 +500,19 @@ export default function About() {
               </div>
             </motion.section>
 
-            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="space-y-6">
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card space-y-5 rounded-4xl border p-6 sm:p-8">
               <div className="flex items-center gap-3">
-                <Award className="h-5 w-5 text-accent" />
-                <h2 className="font-heading text-xl uppercase tracking-[0.25em] text-accent">Certifications</h2>
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <Award className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Credentials</p>
+                  <h2 className="text-2xl font-semibold text-foreground">Certifications</h2>
+                </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 {certifications.map((cert, idx) => (
-                  <motion.div key={idx} whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }} className="rounded-3xl border border-accent/10 bg-surface/95 p-6 shadow-sm transition-all duration-300">
+                  <motion.div key={idx} whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }} className="about-inner-card rounded-3xl border p-5 shadow-sm transition-all duration-300">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="rounded-2xl bg-accent/10 p-3">
                         <cert.icon className="h-5 w-5 text-accent" />
@@ -454,17 +528,62 @@ export default function About() {
               </div>
             </motion.section>
 
-            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-2">
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card space-y-5 rounded-4xl border p-6">
               <div className="flex items-center gap-3">
-                <GraduationCap className="h-5 w-5 text-accent" />
-                <h2 className="font-heading text-xl uppercase tracking-[0.25em]">Education</h2>
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <BookOpen className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Research & writing</p>
+                  <h2 className="text-2xl font-semibold text-foreground">Publications</h2>
+                </div>
               </div>
-              <div className="space-y-6">
+              <motion.div
+                whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }}
+                className="about-inner-card rounded-[1.5rem] border p-5 shadow-sm transition-all duration-300"
+              >
+                <p className="text-sm leading-7 text-muted-foreground">Academic articles, technical notes, and applied research updates will appear here.</p>
+                <h3 className="mt-4 text-xl font-semibold text-foreground">Coming Soon</h3>
+              </motion.div>
+            </motion.section>
+
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card space-y-5 rounded-4xl border p-6">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <FileCheck2 className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Intellectual property</p>
+                  <h2 className="text-2xl font-semibold text-foreground">Patent</h2>
+                </div>
+              </div>
+              <motion.div
+                whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }}
+                className="about-inner-card rounded-[1.5rem] border p-5 shadow-sm transition-all duration-300"
+              >
+                <p className="text-sm leading-7 text-muted-foreground">Filed designs, patent work, and formal IP milestones will be listed in this space.</p>
+                <h3 className="mt-4 text-xl font-semibold text-foreground">Coming Soon</h3>
+              </motion.div>
+            </motion.section>
+            </div>
+
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card space-y-5 rounded-4xl border p-6 sm:p-8">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <GraduationCap className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Academic foundation</p>
+                  <h2 className="text-2xl font-semibold text-foreground">Education</h2>
+                </div>
+              </div>
+              <div className="space-y-4">
                 {education.map((edu, idx) => (
                   <motion.div
                     key={idx}
                     whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }}
-                    className="group overflow-hidden rounded-[1.75rem] border border-border/50 bg-surface/95 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                    className="about-inner-card group overflow-hidden rounded-[1.5rem] border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                   >
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
                       <h3 className="text-lg font-semibold text-foreground">{edu.institution}</h3>
@@ -494,10 +613,12 @@ export default function About() {
             </motion.section>
           </div>
 
-          <aside className="space-y-16">
-            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-4xl border border-border/50 bg-surface/90 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+          <aside className="space-y-8 lg:sticky lg:top-24">
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card rounded-4xl border p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <Code className="h-5 w-5 text-accent" />
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <Code className="h-5 w-5 text-accent" />
+                </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Core Strengths</p>
                   <h2 className="text-2xl font-semibold text-foreground">Skillset</h2>
@@ -505,7 +626,7 @@ export default function About() {
               </div>
               <div className="grid gap-4">
                 {skills.map((skill, idx) => (
-                  <motion.div key={idx} whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }} className="rounded-3xl border border-muted/20 bg-card/80 p-5 shadow-sm hover:border-accent/30 transition-all duration-300">
+                  <motion.div key={idx} whileHover={{ y: -6, boxShadow: "0 28px 70px rgba(15, 23, 42, 0.12)" }} className="about-inner-card rounded-3xl border p-5 shadow-sm hover:border-accent/30 transition-all duration-300">
                     <div className="flex items-center gap-3 mb-4">
                       <skill.icon className="h-5 w-5 text-accent" />
                       <h3 className="font-heading text-sm font-semibold uppercase tracking-[0.25em] text-foreground">{skill.category}</h3>
@@ -523,9 +644,11 @@ export default function About() {
               </div>
             </motion.section>
 
-            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-4xl border border-border/50 bg-surface/90 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+            <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="about-section-card rounded-4xl border p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <Users className="h-5 w-5 text-accent" />
+                <div className="rounded-2xl bg-accent/10 p-3">
+                  <Users className="h-5 w-5 text-accent" />
+                </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Beyond work</p>
                   <h2 className="text-2xl font-semibold text-foreground">Extra Curricular</h2>
@@ -533,14 +656,14 @@ export default function About() {
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 {extraCurriculars.map((activity, idx) => (
-                  <motion.div key={idx} whileHover={{ y: -3, scale: 1.01 }} className="rounded-3xl border border-muted/20 bg-card/80 px-5 py-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:border-accent/30">
+                  <motion.div key={idx} whileHover={{ y: -3, scale: 1.01 }} className="about-inner-card rounded-3xl border px-5 py-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:border-accent/30">
                     {activity}
                   </motion.div>
                 ))}
               </div>
             </motion.section>
 
-            <section className="relative overflow-hidden rounded-4xl border border-accent/20 bg-linear-to-br from-accent/10 via-surface/90 to-accent/5 p-8 shadow-[0_30px_80px_rgba(6,182,212,0.12)]">
+            <section className="about-accent-card relative overflow-hidden rounded-4xl border p-6 shadow-[0_24px_70px_rgba(6,182,212,0.1)] sm:p-8">
               <div className="absolute inset-y-0 right-0 w-32 opacity-20">
                 <Palette className="h-full w-full" />
               </div>

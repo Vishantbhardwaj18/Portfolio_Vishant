@@ -17,13 +17,17 @@ import {
   Github,
   Globe,
   Linkedin,
+  ListChecks,
   Mail,
+  MessageSquareText,
   MapPin,
   Phone,
   Send,
   Shield,
   Sparkles,
   Target,
+  Timer,
+  UserRound,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,7 +58,7 @@ const socialLinks = [
   {
     icon: FileText,
     label: "Resume",
-    href: "/images/vishantbhardwajresume.pdf",
+    href: "/images/vishantbhardwaj.pdf",
     details: "Technical CV",
   },
 ];
@@ -87,20 +91,28 @@ const focusOptions = [
   "Robotics / automation",
   "Growth & systems scaling",
   "Technical strategy",
+  "Other",
 ];
 
 const timelineOptions = [
   "Now to next 4 weeks",
+  "Next 1-2 months",
   "MVP build, 2-3 months",
   "Product roadmap, 4-6 months",
+  "6-12 month build cycle",
   "Long-term systems",
+  "Other",
 ];
 
 const budgetOptions = [
+  "Below INR 5L / Under $6k",
+  "INR 5L-10L / $6k-$12k",
+  "INR 10L-20L / $12k-$25k",
   "INR 20L+ / $25k-$50k",
   "INR 40L+ / $50k-$150k",
   "INR 1Cr+ / $150k+",
   "Equity / partnership",
+  "Other",
 ];
 
 const fadeUp = {
@@ -122,6 +134,28 @@ const fieldVariants = {
   },
 };
 
+const messageLimits = {
+  min: 50,
+  max: 1000,
+};
+
+const blockedMessageWords = [
+  "fuck",
+  "shit",
+  "bitch",
+  "asshole",
+  "bastard",
+  "idiot",
+  "moron",
+  "stupid",
+  "hate",
+];
+
+function containsBlockedLanguage(value: string) {
+  const normalized = value.toLowerCase();
+  return blockedMessageWords.some((word) => new RegExp(`\\b${word}\\b`, "i").test(normalized));
+}
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="flex items-center text-[10px] font-black uppercase tracking-[0.35em] text-muted-foreground">
@@ -132,13 +166,15 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function Contact() {
-  const [formStatus, setFormStatus] = React.useState<"idle" | "submitting" | "success">("idle");
-  const [selectedProjectFocus, setSelectedProjectFocus] = React.useState(focusOptions[0]);
-  const [selectedTimeline, setSelectedTimeline] = React.useState(timelineOptions[0]);
-  const [selectedBudget, setSelectedBudget] = React.useState(budgetOptions[0]);
+  const [formStatus, setFormStatus] = React.useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [selectedProjectFocus, setSelectedProjectFocus] = React.useState("");
+  const [selectedTimeline, setSelectedTimeline] = React.useState("");
+  const [selectedBudget, setSelectedBudget] = React.useState("");
   const [expandedFaq, setExpandedFaq] = React.useState<boolean[]>(new Array(faqs.length).fill(false));
   const [copiedValue, setCopiedValue] = React.useState<string | null>(null);
   const [activeField, setActiveField] = React.useState<string | null>(null);
+  const [messageLength, setMessageLength] = React.useState(0);
+  const [messageError, setMessageError] = React.useState<string | null>(null);
   const heroRef = React.useRef<HTMLElement | null>(null);
   const formRef = React.useRef<HTMLDivElement | null>(null);
 const { scrollYProgress } = useScroll();
@@ -152,10 +188,62 @@ const { scrollYProgress } = useScroll();
   const heroY = useTransform(heroProgress, [0, 1], [0, 60]);
   const heroOpacity = useTransform(heroProgress, [0, 0.9], [1, 0.62]);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormStatus("submitting");
-    setTimeout(() => setFormStatus("success"), 1500);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const message = String(formData.get("message") ?? "").trim();
+
+    if (message.length < messageLimits.min) {
+      setMessageError(`Please write at least ${messageLimits.min} characters.`);
+      setFormStatus("idle");
+      return;
+    }
+
+    if (message.length > messageLimits.max) {
+      setMessageError(`Please keep the message under ${messageLimits.max} characters.`);
+      setFormStatus("idle");
+      return;
+    }
+
+    if (containsBlockedLanguage(message)) {
+      setMessageError("Please keep the message professional and remove abusive words.");
+      setFormStatus("idle");
+      return;
+    }
+
+    setMessageError(null);
+    formData.append("_subject", "New portfolio contact form submission");
+    formData.append("_template", "table");
+    formData.append("_captcha", "false");
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/vishantbhardwaj06@gmail.com", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to send form submission");
+      }
+
+      form.reset();
+      setSelectedProjectFocus("");
+      setSelectedTimeline("");
+      setSelectedBudget("");
+      setActiveField(null);
+      setMessageLength(0);
+      setMessageError(null);
+      setFormStatus("success");
+      window.setTimeout(() => setFormStatus("idle"), 3200);
+    } catch {
+      setFormStatus("error");
+    }
   };
 
   const copyToClipboard = async (text: string) => {
@@ -250,7 +338,7 @@ const { scrollYProgress } = useScroll();
                   variant="outline"
                   className="h-11 rounded-2xl border-gold/30 px-6 text-[10px] font-black uppercase tracking-[0.22em] glass hover:border-gold hover:bg-gold/5"
                 >
-                  <a href="/images/vishantbhardwajresume.pdf" target="_blank" rel="noreferrer">
+                  <a href="/images/vishantbhardwaj.pdf" target="_blank" rel="noreferrer">
                     <FileText className="mr-2 h-3.5 w-3.5" /> Founder profile
                   </a>
                 </Button>
@@ -444,8 +532,8 @@ const { scrollYProgress } = useScroll();
                 <Sparkles className="h-48 w-48 rotate-12 text-gold" />
               </div>
 
-              <div className="relative z-10 space-y-12">
-                <div className="space-y-4">
+              <div className="relative z-10 space-y-8">
+                <div className="space-y-3">
                   <p className="text-[10px] font-black uppercase tracking-[0.35em] text-gold">Founder intake</p>
                   <h2 className="font-display text-4xl leading-none md:text-5xl">Strategic fit signal</h2>
                   <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -453,48 +541,57 @@ const { scrollYProgress } = useScroll();
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-10">
-                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6 rounded-[2rem] border border-gold/15 bg-background/45 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-5 md:p-6"
+                >
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <motion.div
                       variants={fieldVariants}
                       animate={activeField === "from_name" ? "active" : "rest"}
                       transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                      className="space-y-3 rounded-none border border-transparent bg-card/70 p-0"
+                      className="space-y-2.5 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                     >
-                      <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="from_name">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="from_name">
+                        <UserRound className="h-3.5 w-3.5" />
                         Founder / lead
                       </label>
-                      <Input
-                        required
-                        id="from_name"
-                        name="from_name"
-                        placeholder="Vishant / Head of Product"
-                        onFocus={() => setActiveField("from_name")}
-                        onBlur={() => setActiveField(null)}
-                        className="rounded-none border-0 border-b border-border bg-transparent px-0 py-6 text-lg font-light placeholder:text-muted-foreground/35 focus:border-gold"
-                      />
-                      <p className="text-[11px] text-muted-foreground/80">Your role and decision authority help speed the next step.</p>
+                      <div className="rounded-2xl border border-border/70 bg-background/60 px-4 transition-colors focus-within:border-gold">
+                        <Input
+                          required
+                          id="from_name"
+                          name="from_name"
+                          placeholder="Vishant / Head of Product"
+                          onFocus={() => setActiveField("from_name")}
+                          onBlur={() => setActiveField(null)}
+                          className="h-14 rounded-2xl border-0 bg-transparent px-0 text-lg font-light placeholder:text-muted-foreground/35 focus-visible:ring-0"
+                        />
+                      </div>
+                      <p className="text-[11px] leading-5 text-muted-foreground/80">Your role and decision authority help speed the next step.</p>
                     </motion.div>
                     <motion.div
                       variants={fieldVariants}
                       animate={activeField === "reply_to" ? "active" : "rest"}
                       transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                      className="space-y-3 rounded-none border border-transparent bg-card/70 p-0"
+                      className="space-y-2.5 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                     >
-                      <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="reply_to">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="reply_to">
+                        <Mail className="h-3.5 w-3.5" />
                         Primary contact
                       </label>
-                      <Input
-                        required
-                        id="reply_to"
-                        name="reply_to"
-                        type="email"
-                        placeholder="founder@startup.com"
-                        onFocus={() => setActiveField("reply_to")}
-                        onBlur={() => setActiveField(null)}
-                        className="rounded-none border-0 border-b border-border bg-transparent px-0 py-6 text-lg font-light placeholder:text-muted-foreground/35 focus:border-gold"
-                      />
-                      <p className="text-[11px] text-muted-foreground/80">I use this for the assessment and next-step invite.</p>
+                      <div className="rounded-2xl border border-border/70 bg-background/60 px-4 transition-colors focus-within:border-gold">
+                        <Input
+                          required
+                          id="reply_to"
+                          name="reply_to"
+                          type="email"
+                          placeholder="founder@startup.com"
+                          onFocus={() => setActiveField("reply_to")}
+                          onBlur={() => setActiveField(null)}
+                          className="h-14 rounded-2xl border-0 bg-transparent px-0 text-lg font-light placeholder:text-muted-foreground/35 focus-visible:ring-0"
+                        />
+                      </div>
+                      <p className="text-[11px] leading-5 text-muted-foreground/80">I use this for the assessment and next-step invite.</p>
                     </motion.div>
                   </div>
 
@@ -502,83 +599,107 @@ const { scrollYProgress } = useScroll();
                     variants={fieldVariants}
                     animate={activeField === "project_focus" ? "active" : "rest"}
                     transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                    className="space-y-4 rounded-none border border-transparent bg-card/70 p-0"
+                    className="space-y-3 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                   >
-                    <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="project_focus">
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="project_focus">
+                      <ListChecks className="h-3.5 w-3.5" />
                       Project focus
                     </label>
-                    <select
-                      id="project_focus"
-                      name="project_focus"
-                      value={selectedProjectFocus}
-                      onChange={(event) => setSelectedProjectFocus(event.target.value)}
-                      onFocus={() => setActiveField("project_focus")}
-                      onBlur={() => setActiveField(null)}
-                      className="w-full rounded-none border border-border bg-card/70 px-4 py-4 text-sm font-black uppercase tracking-[0.18em] text-foreground outline-none transition-all focus:border-gold focus:ring-0"
-                    >
-                      {focusOptions.map((tag) => (
-                        <option key={tag} value={tag} className="text-[10px] uppercase">
-                          {tag}
+                    <div className="group relative rounded-[1.35rem] border border-border/70 bg-linear-to-r from-background/80 via-background/60 to-gold/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-[0_16px_38px_rgba(198,161,74,0.12)] focus-within:border-gold">
+                      <select
+                        required
+                        id="project_focus"
+                        name="project_focus"
+                        value={selectedProjectFocus}
+                        onChange={(event) => setSelectedProjectFocus(event.target.value)}
+                        onFocus={() => setActiveField("project_focus")}
+                        onBlur={() => setActiveField(null)}
+                        className="min-h-12 w-full appearance-none rounded-[1.35rem] border-0 bg-transparent px-5 py-3.5 pr-12 text-sm font-black uppercase tracking-[0.16em] text-foreground outline-none focus:ring-0"
+                      >
+                        <option value="" disabled className="text-[10px] uppercase">
+                          Select option
                         </option>
-                      ))}
-                    </select>
-                    <p className="text-[11px] text-muted-foreground/80">
+                        {focusOptions.map((tag) => (
+                          <option key={tag} value={tag} className="text-[10px] uppercase">
+                            {tag}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-gold" />
+                    </div>
+                    <p className="rounded-full bg-gold/[0.04] px-3.5 py-1.5 text-[11px] leading-5 text-muted-foreground/80">
                       Select the option that best describes your project focus.
                     </p>
                   </motion.div>
 
-                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <motion.div
                       variants={fieldVariants}
                       animate={activeField === "timeline" ? "active" : "rest"}
                       transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                      className="space-y-6 rounded-none border border-transparent bg-card/70 p-0"
+                      className="space-y-3 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                     >
-                      <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="timeline">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="timeline">
+                        <Timer className="h-3.5 w-3.5" />
                         Launch horizon
                       </label>
-                      <select
-                        id="timeline"
-                        name="timeline"
-                        value={selectedTimeline}
-                        onChange={(event) => setSelectedTimeline(event.target.value)}
-                        onFocus={() => setActiveField("timeline")}
-                        onBlur={() => setActiveField(null)}
-                        className="w-full rounded-none border border-border bg-card/70 px-4 py-4 text-sm font-black uppercase tracking-[0.18em] text-foreground outline-none transition-all focus:border-gold focus:ring-0"
-                      >
-                        {timelineOptions.map((time) => (
-                          <option key={time} value={time} className="text-[10px] uppercase">
-                            {time}
+                      <div className="group relative rounded-[1.35rem] border border-border/70 bg-linear-to-r from-background/80 via-background/60 to-gold/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-[0_16px_38px_rgba(198,161,74,0.12)] focus-within:border-gold">
+                        <select
+                          required
+                          id="timeline"
+                          name="timeline"
+                          value={selectedTimeline}
+                          onChange={(event) => setSelectedTimeline(event.target.value)}
+                          onFocus={() => setActiveField("timeline")}
+                          onBlur={() => setActiveField(null)}
+                          className="min-h-12 w-full appearance-none rounded-[1.35rem] border-0 bg-transparent px-5 py-3.5 pr-12 text-sm font-black uppercase tracking-[0.16em] text-foreground outline-none focus:ring-0"
+                        >
+                          <option value="" disabled className="text-[10px] uppercase">
+                            Select option
                           </option>
-                        ))}
-                      </select>
-                      <p className="text-[11px] text-muted-foreground/80">Select your expected launch horizon.</p>
+                          {timelineOptions.map((time) => (
+                            <option key={time} value={time} className="text-[10px] uppercase">
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-gold" />
+                      </div>
+                      <p className="rounded-full bg-gold/[0.04] px-3.5 py-1.5 text-[11px] leading-5 text-muted-foreground/80">Select your expected launch horizon.</p>
                     </motion.div>
                     <motion.div
                       variants={fieldVariants}
                       animate={activeField === "budget" ? "active" : "rest"}
                       transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                      className="space-y-6 rounded-none border border-transparent bg-card/70 p-0"
+                      className="space-y-3 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                     >
-                      <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="budget">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70" htmlFor="budget">
+                        <Shield className="h-3.5 w-3.5" />
                         Investment range
                       </label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        value={selectedBudget}
-                        onChange={(event) => setSelectedBudget(event.target.value)}
-                        onFocus={() => setActiveField("budget")}
-                        onBlur={() => setActiveField(null)}
-                        className="w-full rounded-none border border-border bg-card/70 px-4 py-4 text-sm font-black uppercase tracking-[0.18em] text-foreground outline-none transition-all focus:border-gold focus:ring-0"
-                      >
-                        {budgetOptions.map((budget) => (
-                          <option key={budget} value={budget} className="text-[10px] uppercase">
-                            {budget}
+                      <div className="group relative rounded-[1.35rem] border border-border/70 bg-linear-to-r from-background/80 via-background/60 to-gold/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-[0_16px_38px_rgba(198,161,74,0.12)] focus-within:border-gold">
+                        <select
+                          required
+                          id="budget"
+                          name="budget"
+                          value={selectedBudget}
+                          onChange={(event) => setSelectedBudget(event.target.value)}
+                          onFocus={() => setActiveField("budget")}
+                          onBlur={() => setActiveField(null)}
+                          className="min-h-12 w-full appearance-none rounded-[1.35rem] border-0 bg-transparent px-5 py-3.5 pr-12 text-sm font-black uppercase tracking-[0.16em] text-foreground outline-none focus:ring-0"
+                        >
+                          <option value="" disabled className="text-[10px] uppercase">
+                            Select option
                           </option>
-                        ))}
-                      </select>
-                      <p className="text-[11px] text-muted-foreground/80">Select the budget range that fits your project.</p>
+                          {budgetOptions.map((budget) => (
+                            <option key={budget} value={budget} className="text-[10px] uppercase">
+                              {budget}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-gold" />
+                      </div>
+                      <p className="rounded-full bg-gold/[0.04] px-3.5 py-1.5 text-[11px] leading-5 text-muted-foreground/80">Select the budget range that fits your project.</p>
                     </motion.div>
                   </div>
 
@@ -586,29 +707,51 @@ const { scrollYProgress } = useScroll();
                     variants={fieldVariants}
                     animate={activeField === "message" ? "active" : "rest"}
                     transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                    className="space-y-3 rounded-none border border-transparent bg-card/70 p-0"
+                    className="space-y-2.5 rounded-[1.5rem] border border-gold/10 bg-card/70 p-4 shadow-sm transition-colors focus-within:border-gold/35 focus-within:bg-card/90"
                   >
-                    <label className="text-[10px] font-black uppercase tracking-[0.28em] text-gold/70">Outcome statement</label>
-                    <Textarea
-                      required
-                      name="message"
-                      placeholder="Building an AI workflow for enterprise approvals with automation and adoption as the priority..."
-                      onFocus={() => setActiveField("message")}
-                      onBlur={() => setActiveField(null)}
-                      className="min-h-40 resize-none rounded-none border-0 border-b border-border bg-transparent px-0 py-6 text-lg font-light transition-all placeholder:text-muted-foreground/35 focus:border-gold"
-                    />
-                    <p className="text-[11px] text-muted-foreground/80">
-                      Describe the problem, desired outcome, and the primary risk in one paragraph.
-                    </p>
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-gold/70">
+                      <MessageSquareText className="h-3.5 w-3.5" />
+                      Outcome statement
+                    </label>
+                    <div className="rounded-2xl border border-border/70 bg-background/60 px-4 transition-colors focus-within:border-gold">
+                      <Textarea
+                        required
+                        minLength={messageLimits.min}
+                        maxLength={messageLimits.max}
+                        name="message"
+                        placeholder="Building an AI workflow for enterprise approvals with automation and adoption as the priority..."
+                        onChange={(event) => {
+                          setMessageLength(event.target.value.length);
+                          if (messageError) setMessageError(null);
+                        }}
+                        onFocus={() => setActiveField("message")}
+                        onBlur={() => setActiveField(null)}
+                        className="min-h-40 resize-none rounded-2xl border-0 bg-transparent px-0 py-5 text-lg font-light transition-all placeholder:text-muted-foreground/35 focus-visible:ring-0"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p className={`text-[11px] leading-5 ${messageError ? "text-red-500" : "text-muted-foreground/80"}`}>
+                        {messageError ?? `Minimum ${messageLimits.min} characters, maximum ${messageLimits.max}. No abusive words.`}
+                      </p>
+                      <span className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                        messageLength > messageLimits.max || (messageLength > 0 && messageLength < messageLimits.min)
+                          ? "bg-red-500/10 text-red-500"
+                          : "bg-gold/[0.06] text-gold/80"
+                      }`}>
+                        {messageLength}/{messageLimits.max}
+                      </span>
+                    </div>
                   </motion.div>
 
-                  <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }} className="space-y-6">
+                  <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }} className="space-y-4">
                     <Button
                       type="submit"
-                      disabled={formStatus !== "idle"}
+                      disabled={formStatus === "submitting"}
                       className={`relative h-16 w-full overflow-hidden rounded-2xl text-sm font-black uppercase tracking-[0.26em] transition-all ${
                         formStatus === "success"
                           ? "bg-green-600 text-white"
+                          : formStatus === "error"
+                            ? "bg-red-600 text-white hover:bg-red-700"
                           : "bg-gold text-black hover:bg-foreground hover:text-background"
                       }`}
                     >
@@ -629,8 +772,18 @@ const { scrollYProgress } = useScroll();
                             <CheckCircle2 className="mr-3 h-5 w-5" /> Submission received
                           </>
                         )}
+                        {formStatus === "error" && (
+                          <>
+                            <Mail className="mr-3 h-5 w-5" /> Try again
+                          </>
+                        )}
                       </span>
                     </Button>
+                    {formStatus === "error" && (
+                      <p className="text-center text-xs font-medium text-red-500">
+                        Something blocked the email handoff. Please try again or email vishantbhardwaj06@gmail.com directly.
+                      </p>
+                    )}
                     <p className="text-center text-[10px] font-light italic text-muted-foreground/50">
                       Every inquiry is reviewed personally. If there is a fit, you will receive an engagement outline within 48 hours.
                     </p>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ThemeProvider, useTheme } from "./components/theme-provider";
@@ -15,12 +15,58 @@ import Lenis from "lenis";
 import { CursorParticles } from "./components/effects/CursorParticles";
 import Chatbot from "./components/Chatbot";
 
-// ScrollToTop component to handle scrolling to top on route change
-function ScrollToTop() {
+function SmoothScrollController() {
   const { pathname } = useLocation();
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.4,
+    });
+
+    lenisRef.current = lenis;
+
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, {
+          duration: 0.75,
+          easing: (t) => 1 - Math.pow(1 - t, 3),
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 60);
+
+    return () => window.clearTimeout(timeoutId);
   }, [pathname]);
 
   return null;
@@ -44,23 +90,6 @@ function GlobalEffects() {
 
   useEffect(() => {
     if (isMobile) return; // Disable custom cursor on mobile
-
-    // Lenis Smooth Scroll
-    const lenis = new Lenis({
-      duration: 1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      touchMultiplier: 2,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
 
     // Debounced mouse move handler (update cursor position more efficiently)
     const handleMouseMove = (e: MouseEvent) => {
@@ -155,11 +184,11 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       key={location.pathname}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="min-h-screen"
+      initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="route-page min-h-screen"
     >
       {children}
     </motion.div>
@@ -170,11 +199,18 @@ export default function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
       <Router>
-        <ScrollToTop />
-        <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-gold/30 selection:text-gold">
+        <SmoothScrollController />
+        <div className="site-shell flex flex-col min-h-screen text-foreground selection:bg-gold/30 selection:text-gold">
+          <div className="animated-page-bg" aria-hidden="true">
+            <span className="animated-page-bg__orb animated-page-bg__orb--one" />
+            <span className="animated-page-bg__orb animated-page-bg__orb--two" />
+            <span className="animated-page-bg__orb animated-page-bg__orb--three" />
+            <span className="animated-page-bg__orb animated-page-bg__orb--four" />
+            <span className="animated-page-bg__beam" />
+          </div>
           <GlobalEffects />
           <Navbar />
-          <main className="flex-grow pt-16">
+          <main className="flex-grow pt-20">
             <AnimatePresence mode="wait">
               <Routes>
                 <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />

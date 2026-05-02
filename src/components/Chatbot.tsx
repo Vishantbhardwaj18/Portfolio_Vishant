@@ -1,6 +1,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, X, Send, MessageCircle, RefreshCcw } from "lucide-react";
+import { Bot, X, Send, MessageCircle, RefreshCcw, Sparkles, UserRound, ArrowUpRight, BriefcaseBusiness, FolderKanban, Mail, Cpu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -23,7 +24,35 @@ const defaultActions = [
   'Show your top projects',
   'Tell me about your experience',
   'How can I contact you?',
-  'What technologies do you use?'
+  'What technologies do you use?',
+  'Open contact page'
+];
+
+const actionRoutes: Record<string, string> = {
+  'Show your top projects': '/projects',
+  'Recommend a project': '/projects',
+  'Tell me about your experience': '/experience',
+  'How can I contact you?': '/contact',
+  'Open contact page': '/contact',
+  'View resume': '/resume',
+};
+
+const suggestionGroups = [
+  {
+    title: 'Explore',
+    icon: FolderKanban,
+    prompts: ['Show your top projects', 'Recommend a project', 'What is Vishant working on now?']
+  },
+  {
+    title: 'Profile',
+    icon: BriefcaseBusiness,
+    prompts: ['Tell me about your experience', 'What technologies do you use?', 'View resume']
+  },
+  {
+    title: 'Connect',
+    icon: Mail,
+    prompts: ['How can I contact you?', 'Is Vishant available?', 'Open contact page']
+  }
 ];
 
 const createBotMessage = (text: string, actions: string[] = defaultActions): Message => ({
@@ -126,6 +155,18 @@ const knowledgeEntries = [
     response:
       'You can ask me about his projects, experience, skills, contact information, or current product focus. I also know his availability, education, and the business outcomes he delivers.',
     actions: ['What technologies do you use?', 'How can I contact you?', 'Tell me about your experience']
+  },
+  {
+    keywords: ['award', 'awards', 'achievement', 'recognition', 'winner', 'guinness', 'iit hyderabad', 'innovathon'],
+    response:
+      'Notable recognitions include winning THRUST Tech Expo at IIT Hyderabad, winning Innovathon 1.0 at the University of Jammu, a Guinness World Record contribution, and multiple innovation/showcase recognitions.',
+    actions: ['Show your top projects', 'Tell me about your experience', 'View resume']
+  },
+  {
+    keywords: ['service', 'services', 'consulting', 'build for me', 'what can he build', 'founder', 'startup'],
+    response:
+      'Vishant is strongest when helping founder teams clarify a product idea, shape an MVP, map user workflows, and build AI, SaaS, robotics, or automation systems with measurable outcomes.',
+    actions: ['How can I contact you?', 'Show your top projects', 'What technologies do you use?']
   }
 ];
 
@@ -244,7 +285,11 @@ const getBotReply = (messageText: string): Message => {
   );
 };
 
+const formatTime = (timestamp: number) =>
+  new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(timestamp);
+
 const Chatbot: React.FC = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('portfolio-chat-open');
@@ -271,6 +316,14 @@ const Chatbot: React.FC = () => {
     timestamp: Date.now()
   });
 
+  const createFreshWelcomeMessage = (): Message => ({
+    id: `welcome-${Date.now()}`,
+    type: 'bot',
+    text: 'Hi! I am Vishant\'s portfolio assistant. I can summarize his best projects, explain his product and robotics experience, or help you contact him.',
+    actions: quickPrompts,
+    timestamp: Date.now()
+  });
+
   // Load chat history from localStorage
   React.useEffect(() => {
     const savedMessages = localStorage.getItem('portfolio-chat-history');
@@ -280,10 +333,10 @@ const Chatbot: React.FC = () => {
         setMessages(parsed);
       } catch (error) {
         console.error('Failed to load chat history:', error);
-        setMessages([createWelcomeMessage()]);
+        setMessages([createFreshWelcomeMessage()]);
       }
     } else {
-      setMessages([createWelcomeMessage()]);
+      setMessages([createFreshWelcomeMessage()]);
     }
   }, []);
 
@@ -314,7 +367,7 @@ const Chatbot: React.FC = () => {
   }, [messages, isOpen]);
 
   const clearChat = () => {
-    setMessages([createWelcomeMessage()]);
+    setMessages([createFreshWelcomeMessage()]);
     setInput('');
     localStorage.removeItem('portfolio-chat-history');
     setIsTyping(false);
@@ -350,8 +403,41 @@ const Chatbot: React.FC = () => {
     }, 800 + Math.random() * 900);
   };
 
+  const handleAction = (action: string) => {
+    const route = actionRoutes[action];
+
+    if (route) {
+      navigate(route);
+      setIsOpen(true);
+      setUnreadCount(0);
+
+      const userMessage: Message = {
+        id: `user-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        type: 'user',
+        text: action,
+        timestamp: Date.now()
+      };
+
+      const botMessage = createBotMessage(
+        route === '/contact'
+          ? 'I opened the Contact page. You can send Vishant a focused project inquiry there.'
+          : route === '/projects'
+            ? 'I opened the Projects page. Start with ARAK-1, the UAV system, or Noikix for the strongest case studies.'
+            : route === '/experience'
+              ? 'I opened the Experience page so you can see his product leadership and MaVionix work in context.'
+              : 'I opened the Resume page for a compact professional summary.',
+        filterActions(defaultActions, action)
+      );
+
+      setMessages((prev) => [...prev, userMessage, botMessage]);
+      return;
+    }
+
+    handleSendMessage(action);
+  };
+
   const handleQuickPrompt = (prompt: string) => {
-    handleSendMessage(prompt);
+    handleAction(prompt);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -371,7 +457,7 @@ const Chatbot: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-5 right-4 z-[95] sm:bottom-6 sm:right-6">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -379,12 +465,14 @@ const Chatbot: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-16 right-0 w-80 sm:w-96 h-[500px] bg-background/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="absolute bottom-16 right-0 flex h-[min(620px,calc(100vh-7rem))] w-[calc(100vw-2rem)] max-w-[27rem] flex-col overflow-hidden rounded-3xl border border-primary/20 bg-background/95 shadow-[0_30px_120px_rgba(15,23,42,0.28)] backdrop-blur-2xl dark:shadow-[0_30px_130px_rgba(0,0,0,0.62)] sm:w-[27rem]"
           >
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 border-b border-border/50 p-4 flex items-center justify-between gap-3">
+            <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-r from-primary/12 via-surface/80 to-accent/12 p-4">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px gradient-spectrum" />
+              <div className="relative flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-primary/20 bg-primary/15 shadow-[0_0_30px_rgba(var(--primary-rgb),0.16)]">
                     <Bot className="h-5 w-5 text-primary" />
                   </div>
                   <motion.div
@@ -394,25 +482,41 @@ const Chatbot: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground">Vishant's AI</h3>
-                  <p className="text-xs text-muted-foreground">Smart portfolio assistant</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-black text-foreground">Vishant AI</h3>
+                    <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-green-600 dark:text-green-300">Live</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Projects, experience, contact</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={clearChat}
-                  className="rounded-full p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="rounded-xl border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
                   aria-label="Reset chat"
                 >
                   <RefreshCcw className="h-4 w-4" />
                 </button>
                 <button
                   onClick={toggleChat}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  className="rounded-xl border border-border/50 bg-surface/70 p-2 text-muted-foreground transition-colors hover:text-foreground"
                   aria-label="Close chat"
                 >
                   <X className="h-4 w-4" />
                 </button>
+              </div>
+              </div>
+              <div className="relative mt-3 grid grid-cols-3 gap-2">
+                {[
+                  { label: 'AI SaaS', icon: Cpu },
+                  { label: 'Robotics', icon: Sparkles },
+                  { label: 'Product', icon: BriefcaseBusiness },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-center gap-1.5 rounded-xl border border-border/40 bg-surface/55 px-2 py-1.5 text-[10px] font-semibold text-muted-foreground">
+                    <item.icon className="h-3 w-3 text-primary" />
+                    {item.label}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -436,22 +540,28 @@ const Chatbot: React.FC = () => {
                 >
                   <motion.div
                     whileHover={{ scale: msg.type === 'user' ? 1.02 : 1.01 }}
-                    className={`max-w-[78%] break-words whitespace-pre-wrap px-4 py-3 rounded-3xl text-sm ${
+                    className={`max-w-[82%] break-words whitespace-pre-wrap px-4 py-3 text-sm shadow-sm ${
                       msg.type === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-br-sm'
-                        : 'bg-surface text-foreground rounded-bl-sm border border-border/50 shadow-sm'
+                        ? 'rounded-3xl rounded-br-sm bg-primary text-primary-foreground'
+                        : 'rounded-3xl rounded-bl-sm border border-border/50 bg-surface/95 text-foreground'
                     }`}
                   >
+                    <div className="mb-1 flex items-center gap-1.5 text-[10px] opacity-70">
+                      {msg.type === 'user' ? <UserRound className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                      <span>{msg.type === 'user' ? 'You' : 'Assistant'}</span>
+                      <span>{formatTime(msg.timestamp)}</span>
+                    </div>
                     {msg.text}
                     {msg.actions && msg.actions.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {msg.actions.map((action) => (
                           <button
                             key={action}
-                            onClick={() => handleSendMessage(action)}
-                            className="rounded-full px-3 py-1 text-[11px] bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                            onClick={() => handleAction(action)}
+                            className="inline-flex items-center gap-1 rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/20"
                           >
                             {action}
+                            {actionRoutes[action] && <ArrowUpRight className="h-3 w-3" />}
                           </button>
                         ))}
                       </div>
@@ -517,7 +627,7 @@ const Chatbot: React.FC = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="px-4 pb-2 border-b border-border/50"
+                  className="border-b border-border/50 px-4 pb-3"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Suggested questions</p>
@@ -529,15 +639,25 @@ const Chatbot: React.FC = () => {
                       <X className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {quickPrompts.map((prompt) => (
-                      <button
-                        key={prompt}
-                        onClick={() => handleQuickPrompt(prompt)}
-                        className="px-3 py-1 text-xs bg-surface/90 text-foreground hover:bg-surface transition-colors border border-border/50 rounded-full shadow-sm"
-                      >
-                        {prompt}
-                      </button>
+                  <div className="space-y-2">
+                    {suggestionGroups.map((group) => (
+                      <div key={group.title} className="rounded-2xl border border-border/40 bg-surface/55 p-2">
+                        <div className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                          <group.icon className="h-3 w-3 text-primary" />
+                          {group.title}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {group.prompts.map((prompt) => (
+                            <button
+                              key={prompt}
+                              onClick={() => handleQuickPrompt(prompt)}
+                              className="rounded-full border border-border/50 bg-background/70 px-2.5 py-1 text-[11px] text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+                            >
+                              {prompt}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </motion.div>
@@ -545,7 +665,7 @@ const Chatbot: React.FC = () => {
             </AnimatePresence>
 
             {/* Input */}
-            <div className="border-t border-border/50 p-4 bg-background/50">
+            <div className="border-t border-border/50 bg-background/65 p-4">
               <div className="flex gap-2">
                 <input
                   ref={inputRef}
@@ -553,8 +673,8 @@ const Chatbot: React.FC = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 rounded-full bg-surface text-foreground placeholder-muted-foreground border border-border/50 focus:border-primary focus:outline-none transition-colors text-sm"
+                  placeholder="Ask about projects, skills, or contact..."
+                  className="min-w-0 flex-1 rounded-2xl border border-border/50 bg-surface px-4 py-3 text-sm text-foreground placeholder-muted-foreground transition-colors focus:border-primary focus:outline-none"
                   aria-label="Chat message input"
                 />
                 <motion.button
@@ -562,7 +682,7 @@ const Chatbot: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSendMessage()}
                   disabled={!input.trim() || isTyping}
-                  className="p-2 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="rounded-2xl bg-primary p-3 text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                   aria-label="Send message"
                 >
                   <Send className="h-4 w-4" />
@@ -578,7 +698,7 @@ const Chatbot: React.FC = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={toggleChat}
-        className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center text-white"
+        className="relative flex h-[3.75rem] w-[3.75rem] items-center justify-center rounded-2xl bg-gradient-to-br from-primary via-accent to-primary text-white shadow-[0_18px_55px_rgba(var(--primary-rgb),0.35)] transition-shadow hover:shadow-[0_24px_70px_rgba(var(--primary-rgb),0.45)]"
         aria-label="Open chat"
       >
         {isOpen ? (

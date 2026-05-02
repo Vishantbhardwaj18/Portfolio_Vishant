@@ -98,11 +98,12 @@ export function Footer() {
   ];
 
   return (
-    <footer className="mt-24 md:mt-40 pb-16 selection:bg-primary/30 selection:text-primary relative overflow-hidden bg-surface/15 backdrop-blur-xl border-t border-primary/10 shadow-[0_0_40px_rgba(var(--primary-rgb),0.08)]">
+    <footer className="mt-24 md:mt-40 pb-16 selection:bg-primary/30 selection:text-primary relative overflow-hidden bg-surface/25 backdrop-blur-xl border-t border-primary/10 shadow-[0_0_40px_rgba(var(--primary-rgb),0.08)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(var(--violet-rgb),0.12),transparent_24%),radial-gradient(circle_at_88%_12%,rgba(var(--rose-rgb),0.1),transparent_22%),radial-gradient(circle_at_82%_84%,rgba(var(--emerald-rgb),0.1),transparent_24%)]" />
       {/* Animated Snake Separator */}
       <div className="absolute top-0 left-0 w-full h-[2px] overflow-hidden bg-primary/10">
         <motion.div 
-          className="absolute top-0 left-0 h-full w-[40%] bg-gradient-to-r from-transparent via-primary to-transparent"
+          className="absolute top-0 left-0 h-full w-[40%] bg-gradient-to-r from-transparent via-rose-400 to-transparent"
           animate={{ 
             x: ["-100%", "300%"] 
           }}
@@ -123,8 +124,8 @@ export function Footer() {
       >
         {/* Background Glow Effects */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         </div>
 
         {/* Strong Final CTA Section */}
@@ -133,14 +134,14 @@ export function Footer() {
           className="text-center py-16 mb-20 relative z-10"
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
-            Let's build something <span className="text-primary">impactful</span>.
+            Let's build something <span className="gradient-text-spectrum">impactful</span>.
           </h2>
           <p className="text-muted-foreground/90 text-lg mb-8 max-w-2xl mx-auto">
             Ready to transform ideas into products that matter. Let's collaborate on your next big thing.
           </p>
           <Magnetic strength={0.1}>
             <Link to="/contact">
-              <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/25">
+              <button className="inline-flex items-center gap-3 px-8 py-4 gradient-spectrum text-primary-foreground font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/25">
                 <Mail className="w-5 h-5" />
                 Contact Me
               </button>
