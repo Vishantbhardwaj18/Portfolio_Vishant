@@ -1,107 +1,169 @@
-# 🤖 Vishant's AI Portfolio Assistant
+<div align="center">
+<img width="1200" height="475" alt="Portfolio Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-> **An intelligent, interactive portfolio powered by AI — built to simulate real conversations, showcase projects, and drive meaningful engagement.**
+# 🚀 Vishant Bhardwaj — AI Portfolio System
 
-
-## 🧠 What This Is
-
-This is not a traditional portfolio.
-
-It’s an **AI-powered conversational interface** that allows users (recruiters, founders, collaborators) to:
-
-* Explore projects dynamically
-* Understand technical work through conversation
-* Get smart recommendations
-* Navigate the portfolio like a product, not a website
+> **A modern, AI-powered portfolio built with advanced frontend architecture, smooth interactions, and a conversational assistant.**
 
 ---
 
-## ⚡ Core Features
+## 🧠 Overview
 
-### 🤖 AI Chatbot Interface
+This project is a **high-performance portfolio application** designed to go beyond static websites.
 
-* Interactive, real-time conversation UI
-* Smart responses based on user intent
-* Suggested prompts for guided exploration
-* Context-aware quick actions
+It combines:
 
-### 🧩 Intelligent Project Discovery
+* ⚡ Smooth navigation & animations
+* 🎯 Product-level UX decisions
+* 🤖 AI chatbot assistant
+* 🧩 Modular React architecture
 
-* Highlights top AI, robotics, and product systems
-* Recommends projects based on user queries
-* Structured knowledge system for fast retrieval
+The goal:
 
-### 🎯 Product-Focused UX
+> Build a portfolio that feels like a **real product experience**, not just a personal website.
 
-* Smooth animations using Framer Motion
-* Persistent chat history (localStorage)
-* Typing indicators and dynamic responses
-* Clean, modern UI with high usability
+---
+
+## ⚙️ Core Architecture
+
+### 🧱 App Structure
+
+```plaintext
+App
+ ├── ThemeProvider (Dark / Light system)
+ ├── Router (React Router)
+ │    ├── Home
+ │    ├── About
+ │    ├── Experience
+ │    ├── Projects
+ │    ├── Contact
+ │    └── Resume
+ ├── GlobalEffects (Cursor + Smooth Scroll)
+ ├── Navbar
+ ├── Footer
+ └── AI Chatbot
+```
+
+---
+
+## ✨ Key Features
+
+### 🎯 Smooth Navigation & Page Transitions
+
+* Animated route transitions using **Framer Motion**
+* Scroll reset on route change
+* Seamless page switching with `AnimatePresence`
+
+---
+
+### 🖱️ Custom Cursor System
+
+* Dual-layer cursor (dot + follower)
+* Lerp-based smooth movement
+* Interactive hover detection
+* Disabled automatically on mobile devices
+
+---
+
+### 🌊 Smooth Scrolling Engine
+
+* Powered by **Lenis**
+* Inertia-based scrolling
+* Optimized for performance
+
+---
+
+### 🎨 Global UI Effects
+
+* Cursor particle effects
+* Dynamic hover states
+* Theme-aware animations
+
+---
+
+### 🤖 AI Chatbot Integration
+
+* Floating chatbot component
+* Persistent chat state (localStorage)
+* Interactive quick prompts
+* Portfolio exploration via conversation
+
+---
+
+### 🌗 Theme System
+
+* Dark / Light / System theme support
+* Persistent user preference
+* Centralized theme provider
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Frontend**
+### Frontend
 
 * React (TypeScript)
+* React Router
 * Tailwind CSS
+
+### Animations & Effects
+
 * Framer Motion
-* Lucide Icons
+* Lenis (smooth scrolling)
 
-**AI Layer**
+### UI/UX Enhancements
 
-* Gemini API (Google AI Studio)
-* Rule-based intent matching (current)
+* Custom cursor engine
+* Particle effects
+* Dynamic transitions
+
+### AI Layer
+
+* Rule-based chatbot system
 * Structured knowledge engine
-
-**Architecture**
-
-* Modular chatbot logic
-* Component-driven UI
-* Local persistence for chat memory
+* Extendable to LLM APIs
 
 ---
 
-## 🧱 How It Works
+## 🧠 Engineering Highlights
 
-```plaintext
-User Input
-   ↓
-Text Normalization
-   ↓
-Intent Detection (Keywords / Rules)
-   ↓
-Knowledge Engine (Projects / Experience / Info)
-   ↓
-Response Generation
-   ↓
-Dynamic Chat UI (Messages + Actions)
-```
+### ⚡ Performance Optimizations
+
+* Throttled mouse tracking (~60fps)
+* requestAnimationFrame loops for smooth rendering
+* Cached hover detection (reduces DOM queries)
+
+---
+
+### 🧩 Modular Design
+
+* Clear separation of:
+
+  * UI components
+  * Effects layer
+  * Routing system
+  * AI chatbot logic
+
+---
+
+### 📱 Responsive & Adaptive
+
+* Automatically disables heavy effects on mobile
+* Touch-device detection
+* Optimized interaction model
 
 ---
 
 ## 🚀 Run Locally
 
-### ✅ Prerequisites
-
-* Node.js (v18+ recommended)
-
-### 1️⃣ Install dependencies
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2️⃣ Set up environment variables
-
-Create a `.env.local` file and add:
-
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-
-### 3️⃣ Start development server
+### 2. Start development server
 
 ```bash
 npm run dev
@@ -109,27 +171,31 @@ npm run dev
 
 ---
 
-## 📈 Future Improvements
+## 📈 Future Enhancements
 
-* 🧠 LLM-based semantic understanding (beyond keywords)
-* 🔍 Vector search for smarter responses
-* 🎯 Personalized chatbot experiences
-* 📊 Analytics (track user queries & engagement)
-* 📥 Lead capture for recruiters
-* 🎥 Interactive project demos inside chat
+* 🧠 LLM-powered chatbot (OpenAI / Gemini)
+* 🔍 Semantic search & vector database
+* 📊 User interaction analytics
+* 🎥 Embedded project demos in chat
+* 📥 Recruiter lead capture system
+* ⚡ Server-side rendering (Next.js upgrade)
 
 ---
 
-## 💡 Why This Project Stands Out
+## 💡 Why This Project is Different
 
-Most portfolios are static.
+Most portfolios:
 
-This one is:
+* Static pages
+* Basic UI
+* No interaction
 
-* **Interactive** → Users engage, not just scroll
-* **Intelligent** → AI-driven responses
-* **Product-Oriented** → Built like a real SaaS system
-* **Scalable** → Ready for LLM + vector DB integration
+This portfolio:
+
+* **Feels like a product**
+* Uses **real frontend engineering patterns**
+* Integrates **AI + UX thinking**
+* Focuses on **engagement, not just display**
 
 ---
 
@@ -138,17 +204,17 @@ This one is:
 Open to:
 
 * AI / ML roles
-* Product & startup collaborations
-* Robotics + intelligent systems development
-* 0 → 1 product building
+* Product engineering roles
+* Startup collaborations
+* 0 → 1 system building
+
 
 
 ---
 
-## ⭐ Final Note
+## ⭐ Final Thought
 
-This project reflects how I build:
+> This project represents how I build systems —
+> **performance-driven, user-focused, and product-oriented.**
 
-> **Not just code — but intelligent, scalable, user-focused systems.**
-
-If you're hiring for AI, product, or engineering roles — let's connect.
+If you're looking for someone who can combine **AI, frontend engineering, and product thinking**, let's connect.
